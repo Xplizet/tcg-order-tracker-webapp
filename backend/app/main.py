@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 # Import routers
-from app.routes import preorders, webhooks
+from app.routes import preorders, webhooks, analytics
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -62,3 +62,4 @@ async def health_check():
 # API versioned routes
 app.include_router(webhooks.router, prefix="/api/webhooks", tags=["webhooks"])
 app.include_router(preorders.router, prefix="/api/v1/preorders", tags=["preorders"])
+app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])

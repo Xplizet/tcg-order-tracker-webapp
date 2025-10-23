@@ -4,6 +4,8 @@ import { useState } from "react"
 import type { PreorderListParams } from "@/lib/api"
 import { PreorderFilters } from "./preorder-filters"
 import { PreorderTable } from "./preorder-table"
+import { SummaryCards } from "../analytics/summary-cards"
+import { AnalyticsCharts } from "../analytics/analytics-charts"
 
 export function PreordersView() {
   const [filters, setFilters] = useState<PreorderListParams>({
@@ -28,6 +30,8 @@ export function PreordersView() {
 
   return (
     <div>
+      <SummaryCards filters={filters} />
+      <AnalyticsCharts filters={filters} />
       <PreorderFilters filters={filters} onFiltersChange={handleFiltersChange} />
       <PreorderTable filters={filters} onSortChange={handleSortChange} />
     </div>

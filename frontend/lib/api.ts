@@ -79,3 +79,42 @@ export interface PreorderListParams {
   sort_by?: string
   sort_order?: "asc" | "desc"
 }
+
+/**
+ * Analytics API types
+ */
+export interface Statistics {
+  total_preorders: number
+  pending_count: number
+  delivered_count: number
+  sold_count: number
+  total_cost: number
+  amount_owing: number
+  total_profit: number
+  average_profit_margin: number | null
+}
+
+export interface SpendingByStore {
+  store_name: string
+  total_spent: number
+  preorder_count: number
+}
+
+export interface StatusOverview {
+  status: string
+  count: number
+  total_value: number
+}
+
+export interface ProfitByStore {
+  store_name: string
+  total_profit: number
+  sold_count: number
+  average_profit_margin: number | null
+}
+
+export interface MonthlySpending {
+  month: string
+  total_spent: number
+  preorder_count: number
+}
