@@ -45,6 +45,19 @@ export function NotificationSettings() {
     },
   })
 
+  const sendTestEmail = useMutation({
+    mutationFn: () =>
+      apiRequest("/api/v1/notifications/send-test", {
+        method: "POST",
+      }),
+    onSuccess: (data: any) => {
+      alert(`Test email sent successfully! Check your inbox.\n\nEmail ID: ${data.email_id}`)
+    },
+    onError: (error: Error) => {
+      alert("Failed to send test email: " + error.message)
+    },
+  })
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     updatePreferences.mutate(formData)
@@ -175,14 +188,34 @@ export function NotificationSettings() {
           </div>
         </div>
 
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            Note: Email notifications require setup of an email service. These preferences will be saved but emails won't be sent until the service is configured.
-          </p>
-        </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold mb-4">Test Email Notifications</h2>
+
+        <p className="text-sm text-gray-600 mb-4">
+          Send a test email to verify that your email notifications are working correctly.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => sendTestEmail.mutate()}
+          disabled={sendTestEmail.isPending}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+        >
+          {sendTestEmail.isPending ? "Sending..." : "Send Test Email"}
+        </button>
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={() => sendTestEmail.mutate()}
+          disabled={sendTestEmail.isPending}
+          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+        >
+          {sendTestEmail.isPending ? "Sending..." : "Send Test Email"}
+        </button>
         <button
           type="submit"
           disabled={updatePreferences.isPending}

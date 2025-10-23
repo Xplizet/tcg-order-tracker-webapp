@@ -4,9 +4,10 @@ Notification Preferences API endpoints
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import NotificationPreferences
+from app.models import NotificationPreferences, User
 from app.schemas.notifications import NotificationPreferencesResponse, NotificationPreferencesUpdate
 from app.utils.auth import get_current_user_id
+from app.services.email_service import send_test_email
 import logging
 
 logger = logging.getLogger(__name__)
@@ -78,3 +79,34 @@ def update_notification_preferences(
         db.rollback()
         logger.error(f"Error updating notification preferences: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to update preferences: {str(e)}")
+
+
+@router.post("/send-test")
+def send_test_notification(
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+):
+    """
+    Send a test email to the authenticated user to verify email notifications are working.
+    """
+    try:
+        # Get user's email from the users table
+        user = db.query(User).filter(User.id == user_id).first()
+
+        if not user or not user.email:
+            raise HTTPException(status_code=404, detail="User email not found")
+
+        # Send test email
+        result = send_test_email(user.email)
+
+        return {
+            "success": True,
+            "message": f"Test email sent to {user.email}",
+            "email_id": result.get("email_id")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error sending test email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to send test email: {str(e)}")
