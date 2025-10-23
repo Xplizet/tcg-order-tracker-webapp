@@ -21,20 +21,20 @@ def send_test_email(to_email: str) -> dict:
         params = {
             "from": FROM_EMAIL,
             "to": [to_email],
-            "subject": "TCG Preorder Tracker - Test Email",
+            "subject": "TCG Order Tracker - Test Email",
             "html": """
                 <h1>Test Email Successful!</h1>
-                <p>Your TCG Preorder Tracker email notifications are working correctly.</p>
+                <p>Your TCG Order Tracker email notifications are working correctly.</p>
                 <p>You will receive:</p>
                 <ul>
-                    <li>Release reminders for upcoming preorders</li>
+                    <li>Release reminders for upcoming orders</li>
                     <li>Payment reminders for outstanding balances</li>
                     <li>Weekly or monthly digest emails (based on your preferences)</li>
                 </ul>
                 <p>You can manage your notification preferences in the Settings page.</p>
                 <hr>
                 <p style="color: gray; font-size: 12px;">
-                    This is an automated test email from TCG Preorder Tracker.
+                    This is an automated test email from TCG Order Tracker.
                 </p>
             """
         }
@@ -65,7 +65,7 @@ def send_release_reminder(
             "subject": f"Reminder: {product_name} releases in {days_until} day(s)",
             "html": f"""
                 <h1>Release Reminder</h1>
-                <p>Your preorder is releasing soon!</p>
+                <p>Your order is releasing soon!</p>
 
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h2 style="margin-top: 0;">{product_name}</h2>
@@ -78,7 +78,7 @@ def send_release_reminder(
 
                 <hr>
                 <p style="color: gray; font-size: 12px;">
-                    You received this email because you have release reminders enabled in TCG Preorder Tracker.
+                    You received this email because you have release reminders enabled in TCG Order Tracker.
                     <br>Manage your preferences in Settings.
                 </p>
             """
@@ -96,7 +96,7 @@ def send_release_reminder(
 def send_payment_reminder(
     to_email: str,
     total_owing: float,
-    preorder_count: int
+    order_count: int
 ) -> dict:
     """
     Send a payment reminder email for outstanding balances
@@ -105,24 +105,24 @@ def send_payment_reminder(
         params = {
             "from": FROM_EMAIL,
             "to": [to_email],
-            "subject": f"Payment Reminder: ${total_owing:.2f} owing on {preorder_count} preorder(s)",
+            "subject": f"Payment Reminder: ${total_owing:.2f} owing on {order_count} order(s)",
             "html": f"""
                 <h1>Payment Reminder</h1>
-                <p>You have outstanding balances on your preorders.</p>
+                <p>You have outstanding balances on your orders.</p>
 
                 <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h2 style="margin-top: 0; color: #92400e;">Total Amount Owing</h2>
                     <p style="font-size: 32px; font-weight: bold; color: #92400e; margin: 10px 0;">
                         ${total_owing:.2f}
                     </p>
-                    <p><strong>Number of Preorders:</strong> {preorder_count}</p>
+                    <p><strong>Number of Orders:</strong> {order_count}</p>
                 </div>
 
-                <p>Log in to TCG Preorder Tracker to view details and update your payments.</p>
+                <p>Log in to TCG Order Tracker to view details and update your payments.</p>
 
                 <hr>
                 <p style="color: gray; font-size: 12px;">
-                    You received this email because you have payment reminders enabled in TCG Preorder Tracker.
+                    You received this email because you have payment reminders enabled in TCG Order Tracker.
                     <br>Manage your preferences in Settings.
                 </p>
             """
@@ -139,7 +139,7 @@ def send_payment_reminder(
 
 def send_weekly_digest(
     to_email: str,
-    total_preorders: int,
+    total_orders: int,
     pending_count: int,
     delivered_count: int,
     total_owing: float
@@ -151,24 +151,24 @@ def send_weekly_digest(
         params = {
             "from": FROM_EMAIL,
             "to": [to_email],
-            "subject": "TCG Preorder Tracker - Weekly Digest",
+            "subject": "TCG Order Tracker - Weekly Digest",
             "html": f"""
-                <h1>Your Weekly Preorder Digest</h1>
-                <p>Here's a summary of your preorders this week:</p>
+                <h1>Your Weekly Order Digest</h1>
+                <p>Here's a summary of your orders this week:</p>
 
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h2 style="margin-top: 0;">Summary</h2>
-                    <p><strong>Total Preorders:</strong> {total_preorders}</p>
+                    <p><strong>Total Orders:</strong> {total_orders}</p>
                     <p><strong>Pending:</strong> {pending_count}</p>
                     <p><strong>Delivered:</strong> {delivered_count}</p>
                     <p><strong>Total Owing:</strong> ${total_owing:.2f}</p>
                 </div>
 
-                <p>Log in to TCG Preorder Tracker to see more details.</p>
+                <p>Log in to TCG Order Tracker to see more details.</p>
 
                 <hr>
                 <p style="color: gray; font-size: 12px;">
-                    You received this email because you have weekly digests enabled in TCG Preorder Tracker.
+                    You received this email because you have weekly digests enabled in TCG Order Tracker.
                     <br>Manage your preferences in Settings.
                 </p>
             """
@@ -185,7 +185,7 @@ def send_weekly_digest(
 
 def send_monthly_digest(
     to_email: str,
-    total_preorders: int,
+    total_orders: int,
     total_spent: float,
     total_profit: float,
     sold_count: int
@@ -197,24 +197,24 @@ def send_monthly_digest(
         params = {
             "from": FROM_EMAIL,
             "to": [to_email],
-            "subject": "TCG Preorder Tracker - Monthly Report",
+            "subject": "TCG Order Tracker - Monthly Report",
             "html": f"""
-                <h1>Your Monthly Preorder Report</h1>
-                <p>Here's a summary of your preorder activity this month:</p>
+                <h1>Your Monthly Order Report</h1>
+                <p>Here's a summary of your order activity this month:</p>
 
                 <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <h2 style="margin-top: 0;">Monthly Summary</h2>
-                    <p><strong>Total Preorders:</strong> {total_preorders}</p>
+                    <p><strong>Total Orders:</strong> {total_orders}</p>
                     <p><strong>Total Spent:</strong> ${total_spent:.2f}</p>
                     <p><strong>Items Sold:</strong> {sold_count}</p>
                     <p><strong>Total Profit:</strong> <span style="color: {'green' if total_profit >= 0 else 'red'};">${total_profit:.2f}</span></p>
                 </div>
 
-                <p>Log in to TCG Preorder Tracker to see detailed analytics and charts.</p>
+                <p>Log in to TCG Order Tracker to see detailed analytics and charts.</p>
 
                 <hr>
                 <p style="color: gray; font-size: 12px;">
-                    You received this email because you have monthly reports enabled in TCG Preorder Tracker.
+                    You received this email because you have monthly reports enabled in TCG Order Tracker.
                     <br>Manage your preferences in Settings.
                 </p>
             """

@@ -110,8 +110,8 @@ export default function AdminPage() {
                 <div className="text-3xl font-bold text-green-600 mt-2">{stats.new_users_this_week}</div>
               </div>
               <div className="bg-white rounded-lg shadow p-6">
-                <div className="text-sm text-gray-600">Total Preorders</div>
-                <div className="text-3xl font-bold text-purple-600 mt-2">{stats.total_preorders}</div>
+                <div className="text-sm text-gray-600">Total Orders</div>
+                <div className="text-3xl font-bold text-purple-600 mt-2">{stats.total_orders}</div>
               </div>
             </div>
 
@@ -141,8 +141,8 @@ export default function AdminPage() {
               <h3 className="text-lg font-semibold mb-4">System Metrics</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center py-2 border-b">
-                  <span className="text-gray-600">Average Preorders per User</span>
-                  <span className="font-semibold">{stats.avg_preorders_per_user.toFixed(2)}</span>
+                  <span className="text-gray-600">Average Orders per User</span>
+                  <span className="font-semibold">{stats.avg_orders_per_user.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-gray-600">Active Users (30d)</span>

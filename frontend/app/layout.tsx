@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TCG Preorder Tracker",
-  description: "Track your TCG preorders, payments, and inventory",
+  title: "TCG Order Tracker",
+  description: "Track your TCG orders, payments, and inventory",
 };
 
 export default function RootLayout({

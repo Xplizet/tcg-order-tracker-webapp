@@ -1,13 +1,14 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import * as z from "zod"
 import { useApi } from "@/lib/use-api"
-import type { PreorderUpdate, Preorder } from "@/lib/api"
+import type { OrderCreate, Order } from "@/lib/api"
 
-const preorderSchema = z.object({
+const orderSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(500),
   product_url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
@@ -21,14 +22,10 @@ const preorderSchema = z.object({
   notes: z.string().optional().or(z.literal("")),
 })
 
-type PreorderFormData = z.infer<typeof preorderSchema>
+type OrderFormData = z.infer<typeof orderSchema>
 
-interface EditPreorderFormProps {
-  preorder: Preorder
-  onClose: () => void
-}
-
-export function EditPreorderForm({ preorder, onClose }: EditPreorderFormProps) {
+export function AddOrderForm() {
+  const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { apiRequest } = useApi()
 
@@ -36,38 +33,32 @@ export function EditPreorderForm({ preorder, onClose }: EditPreorderFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PreorderFormData>({
-    resolver: zodResolver(preorderSchema),
+    reset,
+  } = useForm<OrderFormData>({
+    resolver: zodResolver(orderSchema),
     defaultValues: {
-      product_name: preorder.product_name,
-      product_url: preorder.product_url || "",
-      quantity: preorder.quantity,
-      store_name: preorder.store_name,
-      cost_per_item: preorder.cost_per_item,
-      amount_paid: preorder.amount_paid,
-      sold_price: preorder.sold_price || "",
-      status: preorder.status,
-      release_date: preorder.release_date || "",
-      order_date: preorder.order_date || "",
-      notes: preorder.notes || "",
+      quantity: 1,
+      amount_paid: 0,
+      status: "Pending",
     },
   })
 
-  const updatePreorder = useMutation({
-    mutationFn: (data: PreorderUpdate) =>
-      apiRequest<Preorder>(`/api/v1/preorders/${preorder.id}`, {
-        method: "PUT",
+  const createOrder = useMutation({
+    mutationFn: (data: OrderCreate) =>
+      apiRequest<Order>("/api/v1/orders", {
+        method: "POST",
         body: JSON.stringify(data),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
-      onClose()
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
+      reset()
+      setIsOpen(false)
     },
   })
 
-  const onSubmit = (data: PreorderFormData) => {
+  const onSubmit = (data: OrderFormData) => {
     // Clean up empty optional fields
-    const cleanData: PreorderUpdate = {
+    const cleanData: OrderCreate = {
       ...data,
       product_url: data.product_url || undefined,
       sold_price: data.sold_price ? Number(data.sold_price) : undefined,
@@ -75,7 +66,18 @@ export function EditPreorderForm({ preorder, onClose }: EditPreorderFormProps) {
       order_date: data.order_date || undefined,
       notes: data.notes || undefined,
     }
-    updatePreorder.mutate(cleanData)
+    createOrder.mutate(cleanData)
+  }
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Add Order
+      </button>
+    )
   }
 
   return (
@@ -83,9 +85,9 @@ export function EditPreorderForm({ preorder, onClose }: EditPreorderFormProps) {
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Edit Preorder</h2>
+            <h2 className="text-2xl font-bold">Add New Order</h2>
             <button
-              onClick={onClose}
+              onClick={() => setIsOpen(false)}
               className="text-gray-500 hover:text-gray-700"
             >
               ✕
@@ -258,24 +260,24 @@ export function EditPreorderForm({ preorder, onClose }: EditPreorderFormProps) {
             <div className="flex gap-3 pt-4">
               <button
                 type="submit"
-                disabled={updatePreorder.isPending}
+                disabled={createOrder.isPending}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
               >
-                {updatePreorder.isPending ? "Updating..." : "Update Preorder"}
+                {createOrder.isPending ? "Creating..." : "Create Order"}
               </button>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => setIsOpen(false)}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
             </div>
 
-            {updatePreorder.isError && (
+            {createOrder.isError && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                 <p className="text-red-600 text-sm">
-                  Error: {updatePreorder.error.message}
+                  Error: {createOrder.error.message}
                 </p>
               </div>
             )}

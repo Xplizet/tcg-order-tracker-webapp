@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { BulkDeleteResponse, BulkUpdateResponse, PreorderUpdate } from "@/lib/api"
+import type { BulkDeleteResponse, BulkUpdateResponse, OrderUpdate } from "@/lib/api"
 
 interface BulkOperationsProps {
   selectedIds: string[]
@@ -17,17 +17,17 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const bulkUpdate = useMutation({
-    mutationFn: (updateData: PreorderUpdate) =>
-      apiRequest<BulkUpdateResponse>("/api/v1/preorders/bulk-update", {
+    mutationFn: (updateData: OrderUpdate) =>
+      apiRequest<BulkUpdateResponse>("/api/v1/orders/bulk-update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          preorder_ids: selectedIds,
+          order_ids: selectedIds,
           update_data: updateData,
         }),
       }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       queryClient.invalidateQueries({ queryKey: ["statistics"] })
       setShowUpdateForm(false)
       onComplete()
@@ -37,15 +37,15 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
 
   const bulkDelete = useMutation({
     mutationFn: () =>
-      apiRequest<BulkDeleteResponse>("/api/v1/preorders/bulk-delete", {
+      apiRequest<BulkDeleteResponse>("/api/v1/orders/bulk-delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          preorder_ids: selectedIds,
+          order_ids: selectedIds,
         }),
       }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       queryClient.invalidateQueries({ queryKey: ["statistics"] })
       setShowDeleteConfirm(false)
       onComplete()
@@ -53,7 +53,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
     },
   })
 
-  const [updateForm, setUpdateForm] = useState<PreorderUpdate>({
+  const [updateForm, setUpdateForm] = useState<OrderUpdate>({
     status: undefined,
     amount_paid: undefined,
   })
@@ -64,10 +64,10 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
     // Filter out undefined values
     const filteredUpdate = Object.entries(updateForm).reduce((acc, [key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
-        acc[key as keyof PreorderUpdate] = value
+        acc[key as keyof OrderUpdate] = value
       }
       return acc
-    }, {} as PreorderUpdate)
+    }, {} as OrderUpdate)
 
     if (Object.keys(filteredUpdate).length === 0) {
       alert("Please select at least one field to update")
@@ -102,7 +102,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">
-              Bulk Update {selectedIds.length} Preorder(s)
+              Bulk Update {selectedIds.length} Order(s)
             </h3>
 
             <form onSubmit={handleBulkUpdate} className="space-y-4">
@@ -163,7 +163,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Confirm Bulk Delete</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete {selectedIds.length} preorder(s)? This action cannot be undone.
+              Are you sure you want to delete {selectedIds.length} order(s)? This action cannot be undone.
             </p>
 
             <div className="flex gap-2 justify-end">

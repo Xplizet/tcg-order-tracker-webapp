@@ -15,10 +15,10 @@ export default async function Home() {
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-5xl font-bold mb-6">
-          TCG Preorder Tracker
+          TCG Order Tracker
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-          Track your TCG preorders, manage payments, and analyze your collection across all devices.
+          Track your TCG orders, manage payments, and analyze your collection across all devices.
         </p>
 
         <div className="flex gap-4 justify-center">
@@ -39,9 +39,9 @@ export default async function Home() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="p-6">
             <div className="text-4xl mb-4">📦</div>
-            <h3 className="font-semibold text-lg mb-2">Track Preorders</h3>
+            <h3 className="font-semibold text-lg mb-2">Track Orders</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Manage all your TCG preorders in one place with detailed tracking
+              Manage all your TCG orders in one place with detailed tracking
             </p>
           </div>
           <div className="p-6">

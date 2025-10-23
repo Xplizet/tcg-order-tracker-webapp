@@ -18,7 +18,7 @@ export function CsvImportExport() {
   const handleExport = async () => {
     try {
       const token = localStorage.getItem("clerk_token")
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/export`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/export`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -32,7 +32,7 @@ export function CsvImportExport() {
       const contentDisposition = response.headers.get("Content-Disposition")
       const filename = contentDisposition
         ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `preorders_${new Date().toISOString().split("T")[0]}.csv`
+        : `orders_${new Date().toISOString().split("T")[0]}.csv`
 
       // Download file
       const blob = await response.blob()
@@ -60,7 +60,7 @@ export function CsvImportExport() {
 
       const token = localStorage.getItem("clerk_token")
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/import?duplicate_handling=${duplicateHandling}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/import?duplicate_handling=${duplicateHandling}`,
         {
           method: "POST",
           headers: {
@@ -78,7 +78,7 @@ export function CsvImportExport() {
       return response.json()
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       queryClient.invalidateQueries({ queryKey: ["statistics"] })
       setImportResult(data)
       setSelectedFile(null)
@@ -98,7 +98,7 @@ export function CsvImportExport() {
   const handleBackup = async () => {
     try {
       const token = localStorage.getItem("clerk_token")
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/backup`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/backup`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -111,7 +111,7 @@ export function CsvImportExport() {
       const contentDisposition = response.headers.get("Content-Disposition")
       const filename = contentDisposition
         ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `preorders_backup_${new Date().toISOString().split("T")[0]}.json`
+        : `orders_backup_${new Date().toISOString().split("T")[0]}.json`
 
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -138,7 +138,7 @@ export function CsvImportExport() {
 
       const token = localStorage.getItem("clerk_token")
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/restore`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/restore`,
         {
           method: "POST",
           headers: {
@@ -156,7 +156,7 @@ export function CsvImportExport() {
       return response.json()
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       queryClient.invalidateQueries({ queryKey: ["statistics"] })
       setRestoreResult(data)
       setBackupFile(null)
@@ -209,7 +209,7 @@ export function CsvImportExport() {
       {showImportModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-            <h3 className="text-lg font-semibold mb-4">Import Preorders from CSV</h3>
+            <h3 className="text-lg font-semibold mb-4">Import Orders from CSV</h3>
 
             <div className="space-y-4">
               <div>
@@ -297,13 +297,13 @@ export function CsvImportExport() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-lg w-full">
             <h3 className="text-lg font-semibold mb-4 text-red-600">
-              Restore Preorders from Backup
+              Restore Orders from Backup
             </h3>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-yellow-800 font-semibold">Warning:</p>
               <p className="text-sm text-yellow-700">
-                This will DELETE all your current preorders and replace them with the backup data. This action cannot be undone!
+                This will DELETE all your current orders and replace them with the backup data. This action cannot be undone!
               </p>
             </div>
 

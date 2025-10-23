@@ -3,24 +3,24 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { Preorder, PreorderList, PreorderListParams } from "@/lib/api"
-import { EditPreorderForm } from "./edit-preorder-form"
+import type { Order, OrderList, OrderListParams } from "@/lib/api"
+import { EditOrderForm } from "./edit-order-form"
 import { DeleteConfirmation } from "./delete-confirmation"
 import { BulkOperations } from "./bulk-operations"
 
-interface PreorderTableProps {
-  filters: PreorderListParams
+interface OrderTableProps {
+  filters: OrderListParams
   onSortChange: (sortBy: string) => void
 }
 
-export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
+export function OrderTable({ filters, onSortChange }: OrderTableProps) {
   const { apiRequest } = useApi()
-  const [editingPreorder, setEditingPreorder] = useState<Preorder | null>(null)
-  const [deletingPreorder, setDeletingPreorder] = useState<Preorder | null>(null)
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null)
+  const [deletingOrder, setDeletingOrder] = useState<Order | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
   // Build query string from filters
-  const buildQueryString = (params: PreorderListParams) => {
+  const buildQueryString = (params: OrderListParams) => {
     const searchParams = new URLSearchParams()
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
@@ -33,14 +33,14 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   const queryString = buildQueryString(filters)
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["preorders", queryString],
-    queryFn: () => apiRequest<PreorderList>(`/api/v1/preorders?${queryString}`),
+    queryKey: ["orders", queryString],
+    queryFn: () => apiRequest<OrderList>(`/api/v1/orders?${queryString}`),
   })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-gray-600">Loading preorders...</div>
+        <div className="text-gray-600">Loading orders...</div>
       </div>
     )
   }
@@ -48,15 +48,15 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-600">Error loading preorders: {error.message}</p>
+        <p className="text-red-600">Error loading orders: {error.message}</p>
       </div>
     )
   }
 
-  if (!data || data.preorders.length === 0) {
+  if (!data || data.orders.length === 0) {
     return (
       <div className="text-center py-12 bg-gray-50 rounded-lg">
-        <p className="text-gray-600">No preorders yet. Add your first one!</p>
+        <p className="text-gray-600">No orders yet. Add your first one!</p>
       </div>
     )
   }
@@ -92,10 +92,10 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   }
 
   const handleSelectAll = () => {
-    if (selectedIds.size === data.preorders.length) {
+    if (selectedIds.size === data.orders.length) {
       setSelectedIds(new Set())
     } else {
-      setSelectedIds(new Set(data.preorders.map(p => p.id)))
+      setSelectedIds(new Set(data.orders.map(p => p.id)))
     }
   }
 
@@ -137,7 +137,7 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
       <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">
-            My Preorders ({data.total})
+            My Orders ({data.total})
           </h2>
           {selectedIds.size > 0 && (
             <BulkOperations
@@ -155,7 +155,7 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
               <th className="px-6 py-3 text-left">
                 <input
                   type="checkbox"
-                  checked={selectedIds.size === data.preorders.length && data.preorders.length > 0}
+                  checked={selectedIds.size === data.orders.length && data.orders.length > 0}
                   onChange={handleSelectAll}
                   className="rounded border-gray-300"
                 />
@@ -175,72 +175,72 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.preorders.map((preorder: Preorder) => (
-              <tr key={preorder.id} className="hover:bg-gray-50">
+            {data.orders.map((order: Order) => (
+              <tr key={order.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <input
                     type="checkbox"
-                    checked={selectedIds.has(preorder.id)}
-                    onChange={() => handleSelectOne(preorder.id)}
+                    checked={selectedIds.has(order.id)}
+                    onChange={() => handleSelectOne(order.id)}
                     className="rounded border-gray-300"
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {preorder.product_url ? (
+                    {order.product_url ? (
                       <a
-                        href={preorder.product_url}
+                        href={order.product_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                       >
-                        {preorder.product_name}
+                        {order.product_name}
                       </a>
                     ) : (
-                      preorder.product_name
+                      order.product_name
                     )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {preorder.store_name}
+                  {order.store_name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {preorder.quantity}
+                  {order.quantity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatCurrency(preorder.cost_per_item)}
+                  {formatCurrency(order.cost_per_item)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {formatCurrency(preorder.total_cost)}
+                  {formatCurrency(order.total_cost)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatCurrency(preorder.amount_paid)}
+                  {formatCurrency(order.amount_paid)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatCurrency(preorder.amount_owing)}
+                  {formatCurrency(order.amount_owing)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                      preorder.status
+                      order.status
                     )}`}
                   >
-                    {preorder.status}
+                    {order.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(preorder.order_date)}
+                  {formatDate(order.order_date)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setEditingPreorder(preorder)}
+                      onClick={() => setEditingOrder(order)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => setDeletingPreorder(preorder)}
+                      onClick={() => setDeletingOrder(order)}
                       className="text-red-600 hover:text-red-900"
                     >
                       Delete
@@ -256,22 +256,22 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
       {data.total > data.page_size && (
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
           <p className="text-sm text-gray-600">
-            Showing {data.preorders.length} of {data.total} preorders
+            Showing {data.orders.length} of {data.total} orders
           </p>
         </div>
       )}
 
-      {editingPreorder && (
-        <EditPreorderForm
-          preorder={editingPreorder}
-          onClose={() => setEditingPreorder(null)}
+      {editingOrder && (
+        <EditOrderForm
+          order={editingOrder}
+          onClose={() => setEditingOrder(null)}
         />
       )}
 
-      {deletingPreorder && (
+      {deletingOrder && (
         <DeleteConfirmation
-          preorder={deletingPreorder}
-          onClose={() => setDeletingPreorder(null)}
+          order={deletingOrder}
+          onClose={() => setDeletingOrder(null)}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-# TCG Preorder Tracker - Web Application PRD
+# TCG Order Tracker - Web Application PRD
 
 **Product Requirements Document**
 **Version:** 1.0
@@ -9,10 +9,10 @@
 
 ## Executive Summary
 
-Transform the successful TCG Preorder Tracker desktop application into a modern cloud-based web application with multi-device access, real-time sync, and subscription-based monetization.
+Transform the successful TCG Order Tracker desktop application into a modern cloud-based web application with multi-device access, real-time sync, and subscription-based monetization.
 
 ### Vision
-Provide TCG collectors and resellers with a professional, accessible, cloud-based solution for tracking preorders across all their devices with advanced analytics and reporting.
+Provide TCG collectors and resellers with a professional, accessible, cloud-based solution for tracking orders across all their devices with advanced analytics and reporting.
 
 ### Success Metrics
 - **Phase 1 (Beta - Month 0-3):** 100+ active users, all features free
@@ -27,8 +27,8 @@ Provide TCG collectors and resellers with a professional, accessible, cloud-base
 
 **Primary Persona: TCG Collector**
 - Age: 18-45
-- Collects and preorders TCG products (Pokemon, Magic, Yu-Gi-Oh!, etc.)
-- Tracks 10-100+ preorders across multiple stores
+- Collects and orders TCG products (Pokemon, Magic, Yu-Gi-Oh!, etc.)
+- Tracks 10-100+ orders across multiple stores
 - Wants to manage payments and release dates
 - Values: Organization, financial tracking, notifications
 
@@ -42,7 +42,7 @@ Provide TCG collectors and resellers with a professional, accessible, cloud-base
 ### 1.2 Core Value Proposition
 
 **For Collectors:**
-"Never miss a release or forget how much you owe. Track all your TCG preorders in one beautiful, accessible app."
+"Never miss a release or forget how much you owe. Track all your TCG orders in one beautiful, accessible app."
 
 **For Resellers:**
 "Professional inventory and profit tracking for your TCG business, accessible anywhere."
@@ -108,7 +108,7 @@ Provide TCG collectors and resellers with a professional, accessible, cloud-base
 ┌─────────────────────────────────────────┐
 │      Supabase (PostgreSQL + Storage)     │
 │  - User profiles                         │
-│  - Preorder data                         │
+│  - Order data                         │
 │  - Subscription info                     │
 │  - System settings (admin panel)        │
 │  - File storage (PDFs, exports)         │
@@ -151,8 +151,8 @@ subscriptions (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Preorders (core data model)
-preorders (
+-- Orders (core data model)
+orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
 
@@ -213,9 +213,9 @@ analytics_events (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_preorders_user_id ON preorders(user_id);
-CREATE INDEX idx_preorders_status ON preorders(status);
-CREATE INDEX idx_preorders_created_at ON preorders(created_at DESC);
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
 CREATE INDEX idx_subscriptions_user_id ON subscriptions(user_id);
 CREATE INDEX idx_subscriptions_stripe_customer ON subscriptions(stripe_customer_id);
 CREATE INDEX idx_analytics_user_id ON analytics_events(user_id);
@@ -251,9 +251,9 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Automatic refresh
 - Logout clears session
 
-### 3.2 Core Preorder Management (CRUD)
+### 3.2 Core Order Management (CRUD)
 
-**Create Preorder**
+**Create Order**
 - Form fields:
   - Product Name* (required)
   - Product URL (optional, validates URL format)
@@ -267,9 +267,9 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
   - Status (dropdown: Pending, Delivered, Sold)
 - Auto-calculated: Total Cost, Amount Owing
 - Validation: Zod schema on frontend, Pydantic on backend
-- Success: Redirect to preorders list with success toast
+- Success: Redirect to orders list with success toast
 
-**Read Preorders**
+**Read Orders**
 - **Table View** (default):
   - Columns: Product, Store, Quantity, Cost/Item, Total, Paid, Owing, Status, Release Date
   - Sortable columns (click header to sort)
@@ -281,14 +281,14 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
   - Release date
   - Expandable for details
 
-**Update Preorder**
+**Update Order**
 - Click row to open edit modal
 - Same form as Create
 - Pre-filled with existing data
 - Save updates, cancel discards changes
 - Success: Toast notification, table refreshes
 
-**Delete Preorder**
+**Delete Order**
 - Click delete icon
 - Confirmation modal: "Are you sure? This cannot be undone."
 - Success: Toast notification, row removes from table
@@ -329,7 +329,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ### 3.4 Dashboard & Analytics
 
 **Summary Cards** (Top of page)
-- Total Preorders
+- Total Orders
 - Pending Orders
 - Delivered Items
 - Sold Items
@@ -365,11 +365,11 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 **CSV Export**
 - Button: "Export to CSV"
 - Options:
-  - Export All Preorders
+  - Export All Orders
   - Export Current View (filtered data)
   - Export Selected Items (if rows selected)
 - Columns: All data fields + computed columns
-- Filename: `tcg_preorders_YYYY-MM-DD.csv`
+- Filename: `tcg_orders_YYYY-MM-DD.csv`
 - Downloads immediately
 
 **CSV Import**
@@ -406,7 +406,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 **Manual Backup**
 - Button: "Create Backup"
 - Downloads JSON file: `backup_YYYY-MM-DD_HHMMSS.json`
-- Includes all user's preorders + metadata
+- Includes all user's orders + metadata
 
 **Restore from Backup**
 - Button: "Restore from Backup"
@@ -424,15 +424,15 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Sent X days before release date (user configurable: 1, 3, 7, 14 days)
 - Subject: "Reminder: [Product Name] releases in X days"
 - Body: Product details, store, amount owing
-- CTA: "View Preorder" (link to app)
+- CTA: "View Order" (link to app)
 
 **Payment Reminders**
 - Sent when amount owing > $X (configurable threshold)
 - Daily digest: Lists all items with outstanding balance
-- Subject: "You have X preorders with outstanding payments"
+- Subject: "You have X orders with outstanding payments"
 
 **Digest Options**
-- Weekly summary: Total preorders, spending, upcoming releases
+- Weekly summary: Total orders, spending, upcoming releases
 - Monthly summary: Stats, charts, insights
 
 **Email Preferences**
@@ -481,7 +481,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 
 | Feature | Free (Grandfathered) | Free (New Users) | Basic ($5/mo) | Pro ($15/mo) |
 |---------|---------------------|------------------|---------------|--------------|
-| Preorders | Unlimited | 10 max | 100 max | Unlimited |
+| Orders | Unlimited | 10 max | 100 max | Unlimited |
 | Dashboard Charts | ✅ | Basic only | ✅ | ✅ |
 | CSV Export | ✅ | ✅ | ✅ | ✅ |
 | CSV Import | ✅ | ❌ | ✅ | ✅ |
@@ -500,15 +500,15 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
   "subscriptions_enabled": false,  // Toggle to enable paid tiers
   "grandfather_date": null,         // Set when enabling subscriptions
   "free_tier_limits": {
-    "max_preorders": null,          // null = unlimited during beta
+    "max_orders": null,          // null = unlimited during beta
     "features": ["all"]
   },
   "basic_tier_limits": {
-    "max_preorders": 100,
+    "max_orders": 100,
     "features": ["all"]
   },
   "pro_tier_limits": {
-    "max_preorders": null,          // Unlimited
+    "max_orders": null,          // Unlimited
     "features": ["all", "priority_support", "api_access"]
   }
 }
@@ -563,7 +563,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Total Users (all time)
 - Active Users (last 7/30 days)
 - New Users (this week/month)
-- Total Preorders Created
+- Total Orders Created
 - Total Revenue (when subscriptions enabled)
 - MRR (Monthly Recurring Revenue)
 - Churn Rate
@@ -581,8 +581,8 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Warning: "This cannot be undone. Existing users will be grandfathered."
 
 **Tier Limits**
-- Free Tier: Max preorders (input number or "Unlimited")
-- Basic Tier: Max preorders
+- Free Tier: Max orders (input number or "Unlimited")
+- Basic Tier: Max orders
 - Pro Tier: Always unlimited
 - Save button applies changes globally
 
@@ -594,7 +594,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ### 5.4 User Management
 
 **User List**
-- Table with columns: Email, Name, Tier, Joined Date, Last Active, Preorders Count
+- Table with columns: Email, Name, Tier, Joined Date, Last Active, Orders Count
 - Search by email
 - Filter by tier, grandfathered status
 - Sort by any column
@@ -610,7 +610,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 
 **Usage Metrics**
 - Feature usage (PDF exports, bulk operations, etc.)
-- Average preorders per user
+- Average orders per user
 - Most popular stores
 - Top users by activity
 
@@ -632,12 +632,12 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - `user_upgraded`: Subscription tier change
 - `user_cancelled`: Subscription cancellation
 
-**Preorder Events**
-- `preorder_created`: New preorder added
-- `preorder_updated`: Preorder edited
-- `preorder_deleted`: Preorder deleted
-- `preorder_marked_delivered`: Status changed to Delivered
-- `preorder_marked_sold`: Status changed to Sold
+**Order Events**
+- `order_created`: New preorder added
+- `order_updated`: Order edited
+- `order_deleted`: Order deleted
+- `order_marked_delivered`: Status changed to Delivered
+- `order_marked_sold`: Status changed to Sold
 
 **Feature Usage Events**
 - `csv_exported`: CSV export used
@@ -686,8 +686,8 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Total users: `SELECT COUNT(*) FROM users`
 - Active users (30d): `SELECT COUNT(DISTINCT user_id) FROM analytics_events WHERE created_at > NOW() - INTERVAL '30 days'`
 - New users (this week): `SELECT COUNT(*) FROM users WHERE created_at > DATE_TRUNC('week', NOW())`
-- Total preorders: `SELECT COUNT(*) FROM preorders`
-- Average preorders per user: `SELECT AVG(count) FROM (SELECT COUNT(*) as count FROM preorders GROUP BY user_id)`
+- Total orders: `SELECT COUNT(*) FROM orders`
+- Average orders per user: `SELECT AVG(count) FROM (SELECT COUNT(*) as count FROM orders GROUP BY user_id)`
 
 ---
 
@@ -721,20 +721,20 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ### 7.2 Page Layouts
 
 **Navigation**
-- Sidebar (desktop): Logo, Dashboard, Preorders, Analytics, Settings, Admin (if admin)
+- Sidebar (desktop): Logo, Dashboard, Orders, Analytics, Settings, Admin (if admin)
 - Mobile: Bottom nav bar
 - User menu (top right): Profile, Settings, Logout
 
 **Dashboard Page**
 - Summary cards (top)
 - Charts (4 in grid)
-- Quick actions: Add Preorder, Export, etc.
+- Quick actions: Add Order, Export, etc.
 
-**Preorders Page**
+**Orders Page**
 - Filters bar (top)
 - Search + filter chips
 - Table or Card view toggle
-- Add Preorder button (floating action button on mobile)
+- Add Order button (floating action button on mobile)
 - Pagination (bottom)
 
 **Settings Page**
@@ -796,13 +796,13 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 
 **Initial Scale** (Month 1-6)
 - Users: 100-1,000
-- Preorders: 10,000-100,000
+- Orders: 10,000-100,000
 - Database: < 1GB
 - Bandwidth: < 50GB/month
 
 **Growth Scale** (Month 6-12)
 - Users: 1,000-10,000
-- Preorders: 100,000-1,000,000
+- Orders: 100,000-1,000,000
 - Database: 1-10GB
 - Bandwidth: 50-500GB/month
 
@@ -831,7 +831,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ### 9.2 Data Privacy
 
 **User Data Isolation**
-- Row-level security: Users can only access their own preorders
+- Row-level security: Users can only access their own orders
 - SQL: `WHERE user_id = current_user_id`
 - No cross-user data leakage
 
@@ -985,7 +985,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Basic auth flow (sign up, login)
 
 **Week 3-4: Core Features**
-- CRUD operations (preorders)
+- CRUD operations (orders)
 - Filtering, search, sorting
 - Dashboard with summary cards
 
@@ -1059,7 +1059,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 - Daily Active Users (DAU)
 - Weekly Active Users (WAU)
 - Monthly Active Users (MAU)
-- Average preorders per user
+- Average orders per user
 - Average session duration
 
 **Retention**
@@ -1085,7 +1085,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ### 13.3 Product Metrics
 
 **Feature Adoption**
-- % of users who create a preorder
+- % of users who create an order
 - % of users who export CSV
 - % of users who generate PDF report
 - % of users with email notifications enabled
@@ -1161,7 +1161,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 **Collaboration** (Business Tier - Future)
 - Multi-user accounts
 - Team permissions
-- Shared preorders
+- Shared orders
 
 **Integrations**
 - Zapier integration
@@ -1191,7 +1191,7 @@ CREATE INDEX idx_analytics_created_at ON analytics_events(created_at DESC);
 ## Appendix B: Open Questions
 
 1. **Domain Name**: What domain should we use? `tcgtracker.app`? `preordertrack.com`?
-2. **Branding**: Should we rebrand from "TCG Preorder Tracker" to something catchier?
+2. **Branding**: Should we rebrand from "TCG Order Tracker" to something catchier?
 3. **Marketing**: How will we acquire users initially? Reddit, TCG forums, ads?
 4. **Support**: Email support only, or also live chat? Who handles support?
 

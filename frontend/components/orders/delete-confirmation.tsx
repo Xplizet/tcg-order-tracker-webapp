@@ -2,24 +2,24 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { Preorder } from "@/lib/api"
+import type { Order } from "@/lib/api"
 
 interface DeleteConfirmationProps {
-  preorder: Preorder
+  order: Order
   onClose: () => void
 }
 
-export function DeleteConfirmation({ preorder, onClose }: DeleteConfirmationProps) {
+export function DeleteConfirmation({ order, onClose }: DeleteConfirmationProps) {
   const queryClient = useQueryClient()
   const { apiRequest } = useApi()
 
-  const deletePreorder = useMutation({
+  const deleteOrder = useMutation({
     mutationFn: () =>
-      apiRequest(`/api/v1/preorders/${preorder.id}`, {
+      apiRequest(`/api/v1/orders/${order.id}`, {
         method: "DELETE",
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       onClose()
     },
   })
@@ -27,32 +27,32 @@ export function DeleteConfirmation({ preorder, onClose }: DeleteConfirmationProp
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 className="text-xl font-bold mb-4">Delete Preorder</h2>
+        <h2 className="text-xl font-bold mb-4">Delete Order</h2>
 
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{preorder.product_name}</strong>?
+          Are you sure you want to delete <strong>{order.product_name}</strong>?
           This action cannot be undone.
         </p>
 
-        {deletePreorder.isError && (
+        {deleteOrder.isError && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-600 text-sm">
-              Error: {deletePreorder.error.message}
+              Error: {deleteOrder.error.message}
             </p>
           </div>
         )}
 
         <div className="flex gap-3">
           <button
-            onClick={() => deletePreorder.mutate()}
-            disabled={deletePreorder.isPending}
+            onClick={() => deleteOrder.mutate()}
+            disabled={deleteOrder.isPending}
             className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 transition-colors"
           >
-            {deletePreorder.isPending ? "Deleting..." : "Delete"}
+            {deleteOrder.isPending ? "Deleting..." : "Delete"}
           </button>
           <button
             onClick={onClose}
-            disabled={deletePreorder.isPending}
+            disabled={deleteOrder.isPending}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors"
           >
             Cancel

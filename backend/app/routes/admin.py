@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, extract
 from datetime import datetime, timedelta
 from app.database import get_db
-from app.models import User, Preorder, SystemSettings
+from app.models import User, Order, SystemSettings
 from app.schemas.admin import (
     AdminStatistics,
     SystemSettingsResponse,
@@ -43,13 +43,13 @@ def get_admin_statistics(
         total_users = db.query(func.count(User.id)).scalar() or 0
 
         # Active users (users with activity in last X days)
-        # For now, we'll count users who created preorders recently
-        active_7d = db.query(func.count(func.distinct(Preorder.user_id))).filter(
-            Preorder.created_at >= week_ago
+        # For now, we'll count users who created orders recently
+        active_7d = db.query(func.count(func.distinct(Order.user_id))).filter(
+            Order.created_at >= week_ago
         ).scalar() or 0
 
-        active_30d = db.query(func.count(func.distinct(Preorder.user_id))).filter(
-            Preorder.created_at >= month_ago
+        active_30d = db.query(func.count(func.distinct(Order.user_id))).filter(
+            Order.created_at >= month_ago
         ).scalar() or 0
 
         # New users
@@ -61,14 +61,14 @@ def get_admin_statistics(
             User.created_at >= month_start
         ).scalar() or 0
 
-        # Total preorders
-        total_preorders = db.query(func.count(Preorder.id)).scalar() or 0
+        # Total orders
+        total_orders = db.query(func.count(Order.id)).scalar() or 0
 
-        # Average preorders per user (calculate manually)
+        # Average orders per user (calculate manually)
         if total_users > 0:
-            avg_preorders_per_user = total_preorders / total_users
+            avg_orders_per_user = total_orders / total_users
         else:
-            avg_preorders_per_user = 0.0
+            avg_orders_per_user = 0.0
 
         # User tier distribution
         free_tier = db.query(func.count(User.id)).filter(User.tier == "free").scalar() or 0
@@ -84,8 +84,8 @@ def get_admin_statistics(
             active_users_30d=active_30d,
             new_users_this_week=new_users_week,
             new_users_this_month=new_users_month,
-            total_preorders=total_preorders,
-            avg_preorders_per_user=avg_preorders_per_user,
+            total_orders=total_orders,
+            avg_orders_per_user=avg_orders_per_user,
             free_tier_users=free_tier,
             basic_tier_users=basic_tier,
             pro_tier_users=pro_tier,
@@ -189,8 +189,8 @@ def list_users(
     try:
         query = db.query(
             User,
-            func.count(Preorder.id).label("preorders_count")
-        ).outerjoin(Preorder, User.id == Preorder.user_id).group_by(User.id)
+            func.count(Order.id).label("orders_count")
+        ).outerjoin(Order, User.id == Order.user_id).group_by(User.id)
 
         # Apply filters
         if search:
@@ -209,7 +209,7 @@ def list_users(
 
         # Transform results
         user_list = []
-        for user, preorders_count in results:
+        for user, orders_count in results:
             user_list.append(UserListItem(
                 id=user.id,
                 email=user.email,
@@ -219,7 +219,7 @@ def list_users(
                 is_grandfathered=user.is_grandfathered,
                 is_admin=user.is_admin,
                 created_at=user.created_at,
-                preorders_count=preorders_count or 0
+                orders_count=orders_count or 0
             ))
 
         return user_list
@@ -252,8 +252,8 @@ def update_user_tier(
         user.tier = tier_update.tier
         db.commit()
 
-        # Get preorders count
-        preorders_count = db.query(func.count(Preorder.id)).filter(Preorder.user_id == user_id).scalar() or 0
+        # Get orders count
+        orders_count = db.query(func.count(Order.id)).filter(Order.user_id == user_id).scalar() or 0
 
         logger.info(f"Admin {admin_user.email} changed user {user.email} tier to {tier_update.tier}")
 
@@ -266,7 +266,7 @@ def update_user_tier(
             is_grandfathered=user.is_grandfathered,
             is_admin=user.is_admin,
             created_at=user.created_at,
-            preorders_count=preorders_count
+            orders_count=orders_count
         )
 
     except HTTPException:

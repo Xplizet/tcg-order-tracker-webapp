@@ -1,17 +1,17 @@
 """
-Preorder CRUD API endpoints
+Order CRUD API endpoints
 """
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.database import get_db
-from app.models import Preorder
+from app.models import Order
 from app.schemas import (
-    PreorderCreate,
-    PreorderResponse,
-    PreorderList,
-    PreorderUpdate,
+    OrderCreate,
+    OrderResponse,
+    OrderList,
+    OrderUpdate,
     BulkUpdateRequest,
     BulkUpdateResponse,
     BulkDeleteRequest,
@@ -39,37 +39,37 @@ class DecimalEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-@router.post("", response_model=PreorderResponse, status_code=201)
-def create_preorder(
-    preorder: PreorderCreate,
+@router.post("", response_model=OrderResponse, status_code=201)
+def create_order(
+    order: OrderCreate,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Create a new preorder for the authenticated user
+    Create a new order for the authenticated user
     """
     try:
-        # Create new preorder
-        db_preorder = Preorder(
+        # Create new order
+        db_order = Order(
             user_id=user_id,
-            **preorder.model_dump()
+            **order.model_dump()
         )
 
-        db.add(db_preorder)
+        db.add(db_order)
         db.commit()
-        db.refresh(db_preorder)
+        db.refresh(db_order)
 
-        logger.info(f"Created preorder {db_preorder.id} for user {user_id}")
-        return db_preorder
+        logger.info(f"Created order {db_order.id} for user {user_id}")
+        return db_order
 
     except Exception as e:
         db.rollback()
-        logger.error(f"Error creating preorder: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to create preorder: {str(e)}")
+        logger.error(f"Error creating order: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to create order: {str(e)}")
 
 
-@router.get("", response_model=PreorderList)
-def list_preorders(
+@router.get("", response_model=OrderList)
+def list_orders(
     page: int = 1,
     page_size: int = 50,
     status: Optional[str] = None,
@@ -86,7 +86,7 @@ def list_preorders(
     db: Session = Depends(get_db)
 ):
     """
-    List preorders for the authenticated user with pagination, filtering, and sorting
+    List orders for the authenticated user with pagination, filtering, and sorting
 
     Query Parameters:
     - status: Filter by status (Pending, Delivered, Sold)
@@ -94,62 +94,62 @@ def list_preorders(
     - search: Search in product_name, store_name, notes
     - order_date_from/to: Filter by order date range
     - release_date_from/to: Filter by release date range
-    - amount_owing_only: Show only preorders with amount owing > 0
+    - amount_owing_only: Show only orders with amount owing > 0
     - sort_by: Field to sort by (created_at, order_date, product_name, total_cost, etc.)
     - sort_order: Sort order (asc, desc)
     """
     try:
         # Base query - CRITICAL: Filter by user_id for row-level security
-        query = db.query(Preorder).filter(Preorder.user_id == user_id)
+        query = db.query(Order).filter(Order.user_id == user_id)
 
         # Apply filters
         if status:
-            query = query.filter(Preorder.status == status)
+            query = query.filter(Order.status == status)
 
         if store:
-            query = query.filter(Preorder.store_name == store)
+            query = query.filter(Order.store_name.ilike(f"%{store}%"))
 
         if search:
             search_pattern = f"%{search}%"
             query = query.filter(
-                (Preorder.product_name.ilike(search_pattern)) |
-                (Preorder.store_name.ilike(search_pattern)) |
-                (Preorder.notes.ilike(search_pattern))
+                (Order.product_name.ilike(search_pattern)) |
+                (Order.store_name.ilike(search_pattern)) |
+                (Order.notes.ilike(search_pattern))
             )
 
         # Date range filters
         if order_date_from:
-            query = query.filter(Preorder.order_date >= order_date_from)
+            query = query.filter(Order.order_date >= order_date_from)
         if order_date_to:
-            query = query.filter(Preorder.order_date <= order_date_to)
+            query = query.filter(Order.order_date <= order_date_to)
         if release_date_from:
-            query = query.filter(Preorder.release_date >= release_date_from)
+            query = query.filter(Order.release_date >= release_date_from)
         if release_date_to:
-            query = query.filter(Preorder.release_date <= release_date_to)
+            query = query.filter(Order.release_date <= release_date_to)
 
         # Amount owing filter (using computed column)
         if amount_owing_only:
-            query = query.filter(Preorder.amount_owing > 0)
+            query = query.filter(Order.amount_owing > 0)
 
         # Get total count before sorting
         total = query.count()
 
         # Apply sorting
         valid_sort_fields = {
-            "created_at": Preorder.created_at,
-            "order_date": Preorder.order_date,
-            "release_date": Preorder.release_date,
-            "product_name": Preorder.product_name,
-            "store_name": Preorder.store_name,
-            "quantity": Preorder.quantity,
-            "cost_per_item": Preorder.cost_per_item,
-            "total_cost": Preorder.total_cost,
-            "amount_paid": Preorder.amount_paid,
-            "amount_owing": Preorder.amount_owing,
-            "status": Preorder.status,
+            "created_at": Order.created_at,
+            "order_date": Order.order_date,
+            "release_date": Order.release_date,
+            "product_name": Order.product_name,
+            "store_name": Order.store_name,
+            "quantity": Order.quantity,
+            "cost_per_item": Order.cost_per_item,
+            "total_cost": Order.total_cost,
+            "amount_paid": Order.amount_paid,
+            "amount_owing": Order.amount_owing,
+            "status": Order.status,
         }
 
-        sort_field = valid_sort_fields.get(sort_by, Preorder.created_at)
+        sort_field = valid_sort_fields.get(sort_by, Order.created_at)
         if sort_order == "asc":
             query = query.order_by(sort_field.asc())
         else:
@@ -157,124 +157,124 @@ def list_preorders(
 
         # Apply pagination
         offset = (page - 1) * page_size
-        preorders = query.offset(offset).limit(page_size).all()
+        orders = query.offset(offset).limit(page_size).all()
 
-        logger.info(f"Retrieved {len(preorders)} preorders for user {user_id} (total: {total})")
+        logger.info(f"Retrieved {len(orders)} orders for user {user_id} (total: {total})")
 
-        return PreorderList(
-            preorders=preorders,
+        return OrderList(
+            orders=orders,
             total=total,
             page=page,
             page_size=page_size
         )
 
     except Exception as e:
-        logger.error(f"Error listing preorders: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to list preorders: {str(e)}")
+        logger.error(f"Error listing orders: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to list orders: {str(e)}")
 
 
-@router.get("/{preorder_id}", response_model=PreorderResponse)
-def get_preorder(
-    preorder_id: str,
+@router.get("/{order_id}", response_model=OrderResponse)
+def get_order(
+    order_id: str,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Get a single preorder by ID
+    Get a single order by ID
     """
-    preorder = db.query(Preorder).filter(
-        Preorder.id == preorder_id,
-        Preorder.user_id == user_id  # Row-level security
+    order = db.query(Order).filter(
+        Order.id == order_id,
+        Order.user_id == user_id  # Row-level security
     ).first()
 
-    if not preorder:
-        raise HTTPException(status_code=404, detail="Preorder not found")
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
 
-    return preorder
+    return order
 
 
-@router.put("/{preorder_id}", response_model=PreorderResponse)
-def update_preorder(
-    preorder_id: str,
-    preorder_update: PreorderUpdate,
+@router.put("/{order_id}", response_model=OrderResponse)
+def update_order(
+    order_id: str,
+    order_update: OrderUpdate,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Update a preorder by ID
+    Update a order by ID
     """
     try:
-        # Find preorder with row-level security check
-        preorder = db.query(Preorder).filter(
-            Preorder.id == preorder_id,
-            Preorder.user_id == user_id
+        # Find order with row-level security check
+        order = db.query(Order).filter(
+            Order.id == order_id,
+            Order.user_id == user_id
         ).first()
 
-        if not preorder:
-            raise HTTPException(status_code=404, detail="Preorder not found")
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
 
         # Update only provided fields
-        update_data = preorder_update.model_dump(exclude_unset=True)
+        update_data = order_update.model_dump(exclude_unset=True)
         for field, value in update_data.items():
-            setattr(preorder, field, value)
+            setattr(order, field, value)
 
         db.commit()
-        db.refresh(preorder)
+        db.refresh(order)
 
-        logger.info(f"Updated preorder {preorder_id} for user {user_id}")
-        return preorder
+        logger.info(f"Updated order {order_id} for user {user_id}")
+        return order
 
     except HTTPException:
         raise
     except Exception as e:
         db.rollback()
-        logger.error(f"Error updating preorder: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to update preorder: {str(e)}")
+        logger.error(f"Error updating order: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update order: {str(e)}")
 
 
-@router.delete("/{preorder_id}", status_code=204)
-def delete_preorder(
-    preorder_id: str,
+@router.delete("/{order_id}", status_code=204)
+def delete_order(
+    order_id: str,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Delete a preorder by ID
+    Delete a order by ID
     """
     try:
-        # Find preorder with row-level security check
-        preorder = db.query(Preorder).filter(
-            Preorder.id == preorder_id,
-            Preorder.user_id == user_id
+        # Find order with row-level security check
+        order = db.query(Order).filter(
+            Order.id == order_id,
+            Order.user_id == user_id
         ).first()
 
-        if not preorder:
-            raise HTTPException(status_code=404, detail="Preorder not found")
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
 
-        db.delete(preorder)
+        db.delete(order)
         db.commit()
 
-        logger.info(f"Deleted preorder {preorder_id} for user {user_id}")
+        logger.info(f"Deleted order {order_id} for user {user_id}")
         return None
 
     except HTTPException:
         raise
     except Exception as e:
         db.rollback()
-        logger.error(f"Error deleting preorder: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to delete preorder: {str(e)}")
+        logger.error(f"Error deleting order: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete order: {str(e)}")
 
 
 @router.post("/bulk-update", response_model=BulkUpdateResponse)
-def bulk_update_preorders(
+def bulk_update_orders(
     request: BulkUpdateRequest,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Bulk update multiple preorders at once
+    Bulk update multiple orders at once
 
-    Only updates preorders that belong to the authenticated user.
+    Only updates orders that belong to the authenticated user.
     Returns count of successful updates and list of failed IDs.
     """
     try:
@@ -287,34 +287,34 @@ def bulk_update_preorders(
         if not update_data:
             raise HTTPException(status_code=400, detail="No update data provided")
 
-        for preorder_id in request.preorder_ids:
+        for order_id in request.order_ids:
             try:
-                # Find preorder with row-level security check
-                preorder = db.query(Preorder).filter(
-                    Preorder.id == preorder_id,
-                    Preorder.user_id == user_id
+                # Find order with row-level security check
+                order = db.query(Order).filter(
+                    Order.id == order_id,
+                    Order.user_id == user_id
                 ).first()
 
-                if preorder:
+                if order:
                     # Update fields
                     for field, value in update_data.items():
-                        setattr(preorder, field, value)
+                        setattr(order, field, value)
                     updated_count += 1
                 else:
-                    failed_ids.append(preorder_id)
+                    failed_ids.append(order_id)
 
             except Exception as e:
-                logger.error(f"Error updating preorder {preorder_id}: {str(e)}")
-                failed_ids.append(preorder_id)
+                logger.error(f"Error updating order {order_id}: {str(e)}")
+                failed_ids.append(order_id)
 
         db.commit()
 
-        logger.info(f"Bulk updated {updated_count} preorders for user {user_id}")
+        logger.info(f"Bulk updated {updated_count} orders for user {user_id}")
 
         return BulkUpdateResponse(
             updated_count=updated_count,
             failed_ids=failed_ids,
-            message=f"Successfully updated {updated_count} preorder(s)"
+            message=f"Successfully updated {updated_count} order(s)"
         )
 
     except HTTPException:
@@ -326,47 +326,47 @@ def bulk_update_preorders(
 
 
 @router.post("/bulk-delete", response_model=BulkDeleteResponse)
-def bulk_delete_preorders(
+def bulk_delete_orders(
     request: BulkDeleteRequest,
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Bulk delete multiple preorders at once
+    Bulk delete multiple orders at once
 
-    Only deletes preorders that belong to the authenticated user.
+    Only deletes orders that belong to the authenticated user.
     Returns count of successful deletions and list of failed IDs.
     """
     try:
         deleted_count = 0
         failed_ids = []
 
-        for preorder_id in request.preorder_ids:
+        for order_id in request.order_ids:
             try:
-                # Find preorder with row-level security check
-                preorder = db.query(Preorder).filter(
-                    Preorder.id == preorder_id,
-                    Preorder.user_id == user_id
+                # Find order with row-level security check
+                order = db.query(Order).filter(
+                    Order.id == order_id,
+                    Order.user_id == user_id
                 ).first()
 
-                if preorder:
-                    db.delete(preorder)
+                if order:
+                    db.delete(order)
                     deleted_count += 1
                 else:
-                    failed_ids.append(preorder_id)
+                    failed_ids.append(order_id)
 
             except Exception as e:
-                logger.error(f"Error deleting preorder {preorder_id}: {str(e)}")
-                failed_ids.append(preorder_id)
+                logger.error(f"Error deleting order {order_id}: {str(e)}")
+                failed_ids.append(order_id)
 
         db.commit()
 
-        logger.info(f"Bulk deleted {deleted_count} preorders for user {user_id}")
+        logger.info(f"Bulk deleted {deleted_count} orders for user {user_id}")
 
         return BulkDeleteResponse(
             deleted_count=deleted_count,
             failed_ids=failed_ids,
-            message=f"Successfully deleted {deleted_count} preorder(s)"
+            message=f"Successfully deleted {deleted_count} order(s)"
         )
 
     except HTTPException:
@@ -378,18 +378,18 @@ def bulk_delete_preorders(
 
 
 @router.get("/export")
-def export_preorders(
+def export_orders(
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Export all preorders to CSV format
+    Export all orders to CSV format
 
-    Returns a CSV file with all preorder data including computed columns.
+    Returns a CSV file with all order data including computed columns.
     """
     try:
-        # Get all preorders for the user
-        preorders = db.query(Preorder).filter(Preorder.user_id == user_id).all()
+        # Get all orders for the user
+        orders = db.query(Order).filter(Order.user_id == user_id).all()
 
         # Create CSV in memory
         output = io.StringIO()
@@ -405,7 +405,7 @@ def export_preorders(
         ])
 
         # Write data
-        for p in preorders:
+        for p in orders:
             writer.writerow([
                 p.id,
                 p.product_name,
@@ -433,29 +433,29 @@ def export_preorders(
             iter([output.getvalue()]),
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=preorders_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                "Content-Disposition": f"attachment; filename=orders_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
             }
         )
 
     except Exception as e:
-        logger.error(f"Error exporting preorders: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to export preorders: {str(e)}")
+        logger.error(f"Error exporting orders: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to export orders: {str(e)}")
 
 
 @router.post("/import")
-async def import_preorders(
+async def import_orders(
     file: UploadFile = File(...),
     duplicate_handling: str = "skip",  # skip, update, or add
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Import preorders from CSV file
+    Import orders from CSV file
 
     Duplicate handling options:
     - skip: Skip rows with matching product_name + store_name + order_date
-    - update: Update existing preorders
-    - add: Always add as new preorders (ignore duplicates)
+    - update: Update existing orders
+    - add: Always add as new orders (ignore duplicates)
 
     Returns count of imported, skipped, and failed rows.
     """
@@ -474,11 +474,11 @@ async def import_preorders(
             try:
                 # Check for duplicates if needed
                 if duplicate_handling in ["skip", "update"]:
-                    existing = db.query(Preorder).filter(
-                        Preorder.user_id == user_id,
-                        Preorder.product_name == row["product_name"],
-                        Preorder.store_name == row["store_name"],
-                        Preorder.order_date == row["order_date"]
+                    existing = db.query(Order).filter(
+                        Order.user_id == user_id,
+                        Order.product_name == row["product_name"],
+                        Order.store_name == row["store_name"],
+                        Order.order_date == row["order_date"]
                     ).first()
 
                     if existing:
@@ -486,7 +486,7 @@ async def import_preorders(
                             skipped_count += 1
                             continue
                         elif duplicate_handling == "update":
-                            # Update existing preorder
+                            # Update existing order
                             existing.quantity = int(row["quantity"])
                             existing.cost_per_item = Decimal(row["cost_per_item"])
                             existing.amount_paid = Decimal(row["amount_paid"]) if row["amount_paid"] else Decimal(0)
@@ -498,8 +498,8 @@ async def import_preorders(
                             imported_count += 1
                             continue
 
-                # Create new preorder
-                preorder = Preorder(
+                # Create new order
+                order = Order(
                     user_id=user_id,
                     product_name=row["product_name"],
                     product_url=row.get("product_url") or None,
@@ -514,7 +514,7 @@ async def import_preorders(
                     notes=row.get("notes") or None
                 )
 
-                db.add(preorder)
+                db.add(order)
                 imported_count += 1
 
             except Exception as e:
@@ -524,7 +524,7 @@ async def import_preorders(
 
         db.commit()
 
-        logger.info(f"Imported {imported_count} preorders for user {user_id}")
+        logger.info(f"Imported {imported_count} orders for user {user_id}")
 
         return {
             "imported_count": imported_count,
@@ -540,25 +540,25 @@ async def import_preorders(
 
 
 @router.get("/backup")
-def backup_preorders(
+def backup_orders(
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Create a JSON backup of all preorders
+    Create a JSON backup of all orders
 
-    Returns a JSON file containing all preorder data for backup purposes.
+    Returns a JSON file containing all order data for backup purposes.
     """
     try:
-        # Get all preorders for the user
-        preorders = db.query(Preorder).filter(Preorder.user_id == user_id).all()
+        # Get all orders for the user
+        orders = db.query(Order).filter(Order.user_id == user_id).all()
 
         # Convert to dict
         backup_data = {
             "backup_date": datetime.now().isoformat(),
             "user_id": user_id,
-            "total_preorders": len(preorders),
-            "preorders": [
+            "total_orders": len(orders),
+            "orders": [
                 {
                     "id": p.id,
                     "product_name": p.product_name,
@@ -575,7 +575,7 @@ def backup_preorders(
                     "created_at": p.created_at,
                     "updated_at": p.updated_at
                 }
-                for p in preorders
+                for p in orders
             ]
         }
 
@@ -587,7 +587,7 @@ def backup_preorders(
             iter([json_str]),
             media_type="application/json",
             headers={
-                "Content-Disposition": f"attachment; filename=preorders_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                "Content-Disposition": f"attachment; filename=orders_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             }
         )
 
@@ -597,15 +597,15 @@ def backup_preorders(
 
 
 @router.post("/restore")
-async def restore_preorders(
+async def restore_orders(
     file: UploadFile = File(...),
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Restore preorders from JSON backup file
+    Restore orders from JSON backup file
 
-    WARNING: This will delete all existing preorders and replace them with the backup data.
+    WARNING: This will delete all existing orders and replace them with the backup data.
     """
     try:
         # Read JSON file
@@ -613,20 +613,20 @@ async def restore_preorders(
         backup_data = json.loads(contents.decode("utf-8"))
 
         # Validate backup structure
-        if "preorders" not in backup_data:
+        if "orders" not in backup_data:
             raise HTTPException(status_code=400, detail="Invalid backup file format")
 
-        # Delete all existing preorders for the user
-        db.query(Preorder).filter(Preorder.user_id == user_id).delete()
+        # Delete all existing orders for the user
+        db.query(Order).filter(Order.user_id == user_id).delete()
 
-        # Restore preorders from backup
+        # Restore orders from backup
         restored_count = 0
         failed_count = 0
         errors = []
 
-        for item in backup_data["preorders"]:
+        for item in backup_data["orders"]:
             try:
-                preorder = Preorder(
+                order = Order(
                     user_id=user_id,  # Always use current user_id
                     product_name=item["product_name"],
                     product_url=item.get("product_url"),
@@ -641,23 +641,23 @@ async def restore_preorders(
                     notes=item.get("notes")
                 )
 
-                db.add(preorder)
+                db.add(order)
                 restored_count += 1
 
             except Exception as e:
                 failed_count += 1
                 errors.append(f"Failed to restore item '{item.get('product_name', 'unknown')}': {str(e)}")
-                logger.error(f"Error restoring preorder: {str(e)}")
+                logger.error(f"Error restoring order: {str(e)}")
 
         db.commit()
 
-        logger.info(f"Restored {restored_count} preorders for user {user_id}")
+        logger.info(f"Restored {restored_count} orders for user {user_id}")
 
         return {
             "restored_count": restored_count,
             "failed_count": failed_count,
             "errors": errors[:10],
-            "message": f"Successfully restored {restored_count} preorder(s)"
+            "message": f"Successfully restored {restored_count} order(s)"
         }
 
     except json.JSONDecodeError:

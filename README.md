@@ -1,6 +1,6 @@
-# TCG Preorder Tracker - Web Application
+# TCG Order Tracker - Web Application
 
-A modern cloud-based web application for tracking TCG (Trading Card Game) preorders with real-time sync, analytics, and subscription-based features.
+A modern cloud-based web application for tracking TCG (Trading Card Game) orders with real-time sync, analytics, and subscription-based features.
 
 **Repository:** https://github.com/Xplizet/tcg-order-tracker-webapp
 

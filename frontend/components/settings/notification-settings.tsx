@@ -168,7 +168,7 @@ export function NotificationSettings() {
               className="h-4 w-4 text-blue-600 rounded border-gray-300"
             />
             <label htmlFor="weekly-digest" className="ml-2 block text-sm text-gray-900">
-              Send me a weekly digest of my preorders
+              Send me a weekly digest of my orders
             </label>
           </div>
 

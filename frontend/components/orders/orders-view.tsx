@@ -1,22 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import type { PreorderListParams } from "@/lib/api"
-import { PreorderFilters } from "./preorder-filters"
-import { PreorderTable } from "./preorder-table"
+import type { OrderListParams } from "@/lib/api"
+import { OrderFilters } from "./order-filters"
+import { OrderTable } from "./order-table"
 import { SummaryCards } from "../analytics/summary-cards"
 import { AnalyticsCharts } from "../analytics/analytics-charts"
 import { CsvImportExport } from "./csv-import-export"
 
-export function PreordersView() {
-  const [filters, setFilters] = useState<PreorderListParams>({
+export function OrdersView() {
+  const [filters, setFilters] = useState<OrderListParams>({
     page: 1,
     page_size: 50,
     sort_by: "created_at",
     sort_order: "desc",
   })
 
-  const handleFiltersChange = (newFilters: PreorderListParams) => {
+  const handleFiltersChange = (newFilters: OrderListParams) => {
     setFilters(newFilters)
   }
 
@@ -36,8 +36,8 @@ export function PreordersView() {
       <div className="mb-6 flex justify-end">
         <CsvImportExport />
       </div>
-      <PreorderFilters filters={filters} onFiltersChange={handleFiltersChange} />
-      <PreorderTable filters={filters} onSortChange={handleSortChange} />
+      <OrderFilters filters={filters} onFiltersChange={handleFiltersChange} />
+      <OrderTable filters={filters} onSortChange={handleSortChange} />
     </div>
   )
 }

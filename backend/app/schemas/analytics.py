@@ -8,7 +8,7 @@ from typing import Optional
 
 class Statistics(BaseModel):
     """Overall statistics summary"""
-    total_preorders: int
+    total_orders: int
     pending_count: int
     delivered_count: int
     sold_count: int
@@ -22,11 +22,11 @@ class SpendingByStore(BaseModel):
     """Spending grouped by store"""
     store_name: str
     total_spent: Decimal
-    preorder_count: int
+    order_count: int
 
 
 class StatusOverview(BaseModel):
-    """Preorder count by status"""
+    """Order count by status"""
     status: str
     count: int
     total_value: Decimal
@@ -44,4 +44,4 @@ class MonthlySpending(BaseModel):
     """Spending grouped by month"""
     month: str  # Format: "2025-01"
     total_spent: Decimal
-    preorder_count: int
+    order_count: int

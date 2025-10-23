@@ -7,7 +7,7 @@ from sqlalchemy import func, extract
 from typing import Optional, List
 from decimal import Decimal
 from app.database import get_db
-from app.models import Preorder
+from app.models import Order
 from app.schemas.analytics import (
     Statistics,
     SpendingByStore,
@@ -40,52 +40,52 @@ def get_statistics(
     """
     try:
         # Base query with filters (same as list endpoint)
-        query = db.query(Preorder).filter(Preorder.user_id == user_id)
+        query = db.query(Order).filter(Order.user_id == user_id)
 
         # Apply same filters as list endpoint
         if status:
-            query = query.filter(Preorder.status == status)
+            query = query.filter(Order.status == status)
         if store:
-            query = query.filter(Preorder.store_name == store)
+            query = query.filter(Order.store_name == store)
         if search:
             search_pattern = f"%{search}%"
             query = query.filter(
-                (Preorder.product_name.ilike(search_pattern)) |
-                (Preorder.store_name.ilike(search_pattern)) |
-                (Preorder.notes.ilike(search_pattern))
+                (Order.product_name.ilike(search_pattern)) |
+                (Order.store_name.ilike(search_pattern)) |
+                (Order.notes.ilike(search_pattern))
             )
         if order_date_from:
-            query = query.filter(Preorder.order_date >= order_date_from)
+            query = query.filter(Order.order_date >= order_date_from)
         if order_date_to:
-            query = query.filter(Preorder.order_date <= order_date_to)
+            query = query.filter(Order.order_date <= order_date_to)
         if release_date_from:
-            query = query.filter(Preorder.release_date >= release_date_from)
+            query = query.filter(Order.release_date >= release_date_from)
         if release_date_to:
-            query = query.filter(Preorder.release_date <= release_date_to)
+            query = query.filter(Order.release_date <= release_date_to)
         if amount_owing_only:
-            query = query.filter(Preorder.amount_owing > 0)
+            query = query.filter(Order.amount_owing > 0)
 
         # Calculate statistics
-        all_preorders = query.all()
+        all_orders = query.all()
 
-        total_preorders = len(all_preorders)
-        pending_count = sum(1 for p in all_preorders if p.status == "Pending")
-        delivered_count = sum(1 for p in all_preorders if p.status == "Delivered")
-        sold_count = sum(1 for p in all_preorders if p.status == "Sold")
+        total_orders = len(all_orders)
+        pending_count = sum(1 for p in all_orders if p.status == "Pending")
+        delivered_count = sum(1 for p in all_orders if p.status == "Delivered")
+        sold_count = sum(1 for p in all_orders if p.status == "Sold")
 
-        total_cost = sum(p.total_cost or Decimal(0) for p in all_preorders)
-        amount_owing = sum(p.amount_owing or Decimal(0) for p in all_preorders)
+        total_cost = sum(p.total_cost or Decimal(0) for p in all_orders)
+        amount_owing = sum(p.amount_owing or Decimal(0) for p in all_orders)
 
         # Only calculate profit for sold items
-        sold_preorders = [p for p in all_preorders if p.status == "Sold" and p.profit is not None]
-        total_profit = sum(p.profit for p in sold_preorders)
+        sold_orders = [p for p in all_orders if p.status == "Sold" and p.profit is not None]
+        total_profit = sum(p.profit for p in sold_orders)
 
         # Calculate average profit margin for sold items
-        profit_margins = [p.profit_margin for p in sold_preorders if p.profit_margin is not None]
+        profit_margins = [p.profit_margin for p in sold_orders if p.profit_margin is not None]
         average_profit_margin = sum(profit_margins) / len(profit_margins) if profit_margins else None
 
         return Statistics(
-            total_preorders=total_preorders,
+            total_orders=total_orders,
             pending_count=pending_count,
             delivered_count=delivered_count,
             sold_count=sold_count,
@@ -113,26 +113,26 @@ def get_spending_by_store(
     """
     try:
         query = db.query(
-            Preorder.store_name,
-            func.sum(Preorder.total_cost).label('total_spent'),
-            func.count(Preorder.id).label('preorder_count')
-        ).filter(Preorder.user_id == user_id)
+            Order.store_name,
+            func.sum(Order.total_cost).label('total_spent'),
+            func.count(Order.id).label('order_count')
+        ).filter(Order.user_id == user_id)
 
         # Apply filters
         if status:
-            query = query.filter(Preorder.status == status)
+            query = query.filter(Order.status == status)
         if order_date_from:
-            query = query.filter(Preorder.order_date >= order_date_from)
+            query = query.filter(Order.order_date >= order_date_from)
         if order_date_to:
-            query = query.filter(Preorder.order_date <= order_date_to)
+            query = query.filter(Order.order_date <= order_date_to)
 
-        results = query.group_by(Preorder.store_name).order_by(func.sum(Preorder.total_cost).desc()).all()
+        results = query.group_by(Order.store_name).order_by(func.sum(Order.total_cost).desc()).all()
 
         return [
             SpendingByStore(
                 store_name=row.store_name,
                 total_spent=row.total_spent or Decimal(0),
-                preorder_count=row.preorder_count
+                order_count=row.order_count
             )
             for row in results
         ]
@@ -151,24 +151,24 @@ def get_status_overview(
     db: Session = Depends(get_db)
 ):
     """
-    Get preorder count and value by status
+    Get order count and value by status
     """
     try:
         query = db.query(
-            Preorder.status,
-            func.count(Preorder.id).label('count'),
-            func.sum(Preorder.total_cost).label('total_value')
-        ).filter(Preorder.user_id == user_id)
+            Order.status,
+            func.count(Order.id).label('count'),
+            func.sum(Order.total_cost).label('total_value')
+        ).filter(Order.user_id == user_id)
 
         # Apply filters
         if store:
-            query = query.filter(Preorder.store_name == store)
+            query = query.filter(Order.store_name == store)
         if order_date_from:
-            query = query.filter(Preorder.order_date >= order_date_from)
+            query = query.filter(Order.order_date >= order_date_from)
         if order_date_to:
-            query = query.filter(Preorder.order_date <= order_date_to)
+            query = query.filter(Order.order_date <= order_date_to)
 
-        results = query.group_by(Preorder.status).all()
+        results = query.group_by(Order.status).all()
 
         return [
             StatusOverview(
@@ -196,22 +196,22 @@ def get_profit_by_store(
     """
     try:
         query = db.query(
-            Preorder.store_name,
-            func.sum(Preorder.profit).label('total_profit'),
-            func.count(Preorder.id).label('sold_count'),
-            func.avg(Preorder.profit_margin).label('avg_profit_margin')
+            Order.store_name,
+            func.sum(Order.profit).label('total_profit'),
+            func.count(Order.id).label('sold_count'),
+            func.avg(Order.profit_margin).label('avg_profit_margin')
         ).filter(
-            Preorder.user_id == user_id,
-            Preorder.status == "Sold"
+            Order.user_id == user_id,
+            Order.status == "Sold"
         )
 
         # Apply filters
         if order_date_from:
-            query = query.filter(Preorder.order_date >= order_date_from)
+            query = query.filter(Order.order_date >= order_date_from)
         if order_date_to:
-            query = query.filter(Preorder.order_date <= order_date_to)
+            query = query.filter(Order.order_date <= order_date_to)
 
-        results = query.group_by(Preorder.store_name).order_by(func.sum(Preorder.profit).desc()).all()
+        results = query.group_by(Order.store_name).order_by(func.sum(Order.profit).desc()).all()
 
         return [
             ProfitByStore(
@@ -240,16 +240,16 @@ def get_monthly_spending(
     """
     try:
         query = db.query(
-            func.to_char(Preorder.order_date, 'YYYY-MM').label('month'),
-            func.sum(Preorder.total_cost).label('total_spent'),
-            func.count(Preorder.id).label('preorder_count')
-        ).filter(Preorder.user_id == user_id)
+            func.to_char(Order.order_date, 'YYYY-MM').label('month'),
+            func.sum(Order.total_cost).label('total_spent'),
+            func.count(Order.id).label('order_count')
+        ).filter(Order.user_id == user_id)
 
         # Apply filters
         if status:
-            query = query.filter(Preorder.status == status)
+            query = query.filter(Order.status == status)
         if store:
-            query = query.filter(Preorder.store_name == store)
+            query = query.filter(Order.store_name == store)
 
         results = query.group_by('month').order_by('month').all()
 
@@ -257,7 +257,7 @@ def get_monthly_spending(
             MonthlySpending(
                 month=row.month,
                 total_spent=row.total_spent or Decimal(0),
-                preorder_count=row.preorder_count
+                order_count=row.order_count
             )
             for row in results
         ]

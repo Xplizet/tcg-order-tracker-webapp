@@ -140,7 +140,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Free Tier Max Preorders
+              Free Tier Max Orders
             </label>
             <div className="flex items-center gap-2">
               <input
@@ -167,7 +167,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Basic Tier Max Preorders
+              Basic Tier Max Orders
             </label>
             <div className="flex items-center gap-2">
               <input

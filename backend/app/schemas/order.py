@@ -1,5 +1,5 @@
 """
-Pydantic schemas for Preorder API requests/responses
+Pydantic schemas for Order API requests/responses
 """
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -7,8 +7,8 @@ from datetime import date, datetime
 from decimal import Decimal
 
 
-class PreorderCreate(BaseModel):
-    """Schema for creating a new preorder"""
+class OrderCreate(BaseModel):
+    """Schema for creating a new order"""
     product_name: str = Field(..., min_length=1, max_length=500)
     product_url: Optional[str] = None
     quantity: int = Field(1, gt=0)
@@ -22,8 +22,8 @@ class PreorderCreate(BaseModel):
     notes: Optional[str] = None
 
 
-class PreorderResponse(BaseModel):
-    """Schema for preorder response"""
+class OrderResponse(BaseModel):
+    """Schema for order response"""
     id: str
     user_id: str
     product_name: str
@@ -51,8 +51,8 @@ class PreorderResponse(BaseModel):
         from_attributes = True  # Allows conversion from SQLAlchemy models
 
 
-class PreorderUpdate(BaseModel):
-    """Schema for updating a preorder"""
+class OrderUpdate(BaseModel):
+    """Schema for updating an order"""
     product_name: Optional[str] = Field(None, min_length=1, max_length=500)
     product_url: Optional[str] = None
     quantity: Optional[int] = Field(None, gt=0)
@@ -66,9 +66,9 @@ class PreorderUpdate(BaseModel):
     notes: Optional[str] = None
 
 
-class PreorderList(BaseModel):
-    """Schema for list of preorders with pagination"""
-    preorders: list[PreorderResponse]
+class OrderList(BaseModel):
+    """Schema for list of orders with pagination"""
+    orders: list[OrderResponse]
     total: int
     page: int
     page_size: int
@@ -76,8 +76,8 @@ class PreorderList(BaseModel):
 
 class BulkUpdateRequest(BaseModel):
     """Schema for bulk update request"""
-    preorder_ids: list[str] = Field(..., min_length=1)
-    update_data: PreorderUpdate
+    order_ids: list[str] = Field(..., min_length=1)
+    update_data: OrderUpdate
 
 
 class BulkUpdateResponse(BaseModel):
@@ -89,7 +89,7 @@ class BulkUpdateResponse(BaseModel):
 
 class BulkDeleteRequest(BaseModel):
     """Schema for bulk delete request"""
-    preorder_ids: list[str] = Field(..., min_length=1)
+    order_ids: list[str] = Field(..., min_length=1)
 
 
 class BulkDeleteResponse(BaseModel):

@@ -1,3 +1,3 @@
 """
-TCG Preorder Tracker - Backend Application Package
+TCG Order Tracker - Backend Application Package
 """

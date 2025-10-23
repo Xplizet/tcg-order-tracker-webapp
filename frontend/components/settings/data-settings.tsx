@@ -18,7 +18,7 @@ export function DataSettings() {
   const handleExportJSON = async () => {
     try {
       const token = localStorage.getItem("clerk_token")
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/backup`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/backup`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -31,7 +31,7 @@ export function DataSettings() {
       const contentDisposition = response.headers.get("Content-Disposition")
       const filename = contentDisposition
         ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `preorders_backup_${new Date().toISOString().split("T")[0]}.json`
+        : `orders_backup_${new Date().toISOString().split("T")[0]}.json`
 
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -52,7 +52,7 @@ export function DataSettings() {
   const handleExportCSV = async () => {
     try {
       const token = localStorage.getItem("clerk_token")
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/preorders/export`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/export`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -65,7 +65,7 @@ export function DataSettings() {
       const contentDisposition = response.headers.get("Content-Disposition")
       const filename = contentDisposition
         ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `preorders_${new Date().toISOString().split("T")[0]}.csv`
+        : `orders_${new Date().toISOString().split("T")[0]}.csv`
 
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -85,17 +85,17 @@ export function DataSettings() {
 
   const deleteAllData = useMutation({
     mutationFn: async () => {
-      const allPreorders = await apiRequest<any>("/api/v1/preorders?page_size=1000")
-      const ids = allPreorders.preorders.map((p: any) => p.id)
+      const allOrders = await apiRequest<any>("/api/v1/orders?page_size=1000")
+      const ids = allOrders.orders.map((p: any) => p.id)
 
-      return apiRequest("/api/v1/preorders/bulk-delete", {
+      return apiRequest("/api/v1/orders/bulk-delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preorder_ids: ids }),
+        body: JSON.stringify({ order_ids: ids }),
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["preorders"] })
+      queryClient.invalidateQueries({ queryKey: ["orders"] })
       queryClient.invalidateQueries({ queryKey: ["statistics"] })
       setShowDeleteConfirm(false)
       alert("All data deleted successfully")
@@ -113,8 +113,8 @@ export function DataSettings() {
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600">Total Preorders</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total_preorders || 0}</div>
+              <div className="text-sm text-gray-600">Total Orders</div>
+              <div className="text-2xl font-bold text-gray-900">{stats.total_orders || 0}</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-600">Total Value</div>
@@ -139,7 +139,7 @@ export function DataSettings() {
           <div>
             <h3 className="text-sm font-medium text-gray-700 mb-2">Export as JSON (Full Backup)</h3>
             <p className="text-sm text-gray-600 mb-3">
-              Download all your data as a JSON file. This includes all preorder information and can be used to restore your data later.
+              Download all your data as a JSON file. This includes all order information and can be used to restore your data later.
             </p>
             <button
               onClick={handleExportJSON}
@@ -170,7 +170,7 @@ export function DataSettings() {
         <div>
           <h3 className="text-sm font-medium text-gray-700 mb-2">Delete All Data</h3>
           <p className="text-sm text-gray-600 mb-3">
-            Permanently delete all your preorders. This action cannot be undone. We recommend exporting your data first.
+            Permanently delete all your orders. This action cannot be undone. We recommend exporting your data first.
           </p>
           <button
             onClick={() => setShowDeleteConfirm(true)}
@@ -192,7 +192,7 @@ export function DataSettings() {
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-red-800 font-semibold">Warning!</p>
               <p className="text-sm text-red-700">
-                This will permanently delete all {stats?.total_preorders || 0} preorder(s). This action cannot be undone!
+                This will permanently delete all {stats?.total_orders || 0} order(s). This action cannot be undone!
               </p>
             </div>
 

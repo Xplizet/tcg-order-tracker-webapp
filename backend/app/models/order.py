@@ -1,5 +1,5 @@
 """
-Preorder model - core data model for TCG preorder tracking
+Order model - core data model for TCG order tracking
 """
 from sqlalchemy import Column, String, Integer, Numeric, DateTime, Date, ForeignKey, func, text, Computed
 from sqlalchemy.orm import relationship
@@ -7,8 +7,8 @@ from app.database import Base
 import uuid
 
 
-class Preorder(Base):
-    __tablename__ = "preorders"
+class Order(Base):
+    __tablename__ = "orders"
 
     # Primary key
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
@@ -49,7 +49,7 @@ class Preorder(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # Relationship to user
-    # user = relationship("User", back_populates="preorders")
+    # user = relationship("User", back_populates="orders")
 
     def __repr__(self):
-        return f"<Preorder {self.product_name} - {self.store_name} ({self.status})>"
+        return f"<Order {self.product_name} - {self.store_name} ({self.status})>"

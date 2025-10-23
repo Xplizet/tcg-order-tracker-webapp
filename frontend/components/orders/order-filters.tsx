@@ -1,14 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import type { PreorderListParams } from "@/lib/api"
+import type { OrderListParams } from "@/lib/api"
 
-interface PreorderFiltersProps {
-  filters: PreorderListParams
-  onFiltersChange: (filters: PreorderListParams) => void
+interface OrderFiltersProps {
+  filters: OrderListParams
+  onFiltersChange: (filters: OrderListParams) => void
 }
 
-export function PreorderFilters({ filters, onFiltersChange }: PreorderFiltersProps) {
+export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
   const [searchInput, setSearchInput] = useState(filters.search || "")
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -16,7 +16,7 @@ export function PreorderFilters({ filters, onFiltersChange }: PreorderFiltersPro
     onFiltersChange({ ...filters, search: searchInput || undefined, page: 1 })
   }
 
-  const handleFilterChange = (key: keyof PreorderListParams, value: any) => {
+  const handleFilterChange = (key: keyof OrderListParams, value: any) => {
     onFiltersChange({ ...filters, [key]: value || undefined, page: 1 })
   }
 

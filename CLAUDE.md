@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-TCG Preorder Tracker is a monorepo web application for tracking Trading Card Game preorders. It consists of a Next.js frontend and FastAPI backend, designed to transform a desktop application into a cloud-based SaaS product with subscription tiers.
+TCG Order Tracker is a monorepo web application for tracking Trading Card Game orders. It consists of a Next.js frontend and FastAPI backend, designed to transform a desktop application into a cloud-based SaaS product with subscription tiers.
 
 **Repository:** https://github.com/Xplizet/tcg-order-tracker-webapp
 **Current Status:** Phase 2 - Core Features (CRUD Complete)
@@ -25,7 +25,7 @@ TCG Preorder Tracker is a monorepo web application for tracking Trading Card Gam
 5. All database queries filter by user_id to prevent cross-user data access
 
 ### Database Design (PostgreSQL via Supabase)
-- **Preorders table** uses PostgreSQL GENERATED columns for computed fields:
+- **Orders table** uses PostgreSQL GENERATED columns for computed fields:
   - `total_cost = cost_per_item * quantity`
   - `amount_owing = total_cost - amount_paid`
   - `profit = sold_price - total_cost`
@@ -222,7 +222,7 @@ Update task status immediately when starting/completing work.
 ### Implementing Row-Level Security
 Every query in backend services MUST filter by user_id extracted from JWT:
 ```python
-preorders = db.query(Preorder).filter(Preorder.user_id == current_user_id).all()
+orders = db.query(Order).filter(Order.user_id == current_user_id).all()
 ```
 
 ## Version Information

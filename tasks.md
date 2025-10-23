@@ -1,4 +1,4 @@
-# TCG Preorder Tracker - Development Tasks
+# TCG Order Tracker - Development Tasks
 
 **Project Status:** 🟢 Phase 4 Complete - Settings & Notifications Implemented!
 **Last Updated:** 2025-10-23
@@ -95,7 +95,7 @@
 
 - [x] ✅ **SQLAlchemy Models** `@claude`
   - [x] Create `User` model
-  - [x] Create `Preorder` model with computed fields
+  - [x] Create `Order` model with computed fields
   - [ ] Create `Subscription` model
   - [ ] Create `AnalyticsEvent` model
   - [ ] Create `SystemSettings` model
@@ -107,14 +107,14 @@
   - [x] Create health check endpoint
   - [x] Setup API versioning (`/api/v1`)
 
-### 2.2 Preorder CRUD Operations
+### 2.2 Order CRUD Operations
 
-- [x] ✅ **Backend - Preorder Endpoints** `@claude`
-  - [x] POST `/api/v1/preorders` - Create preorder
-  - [x] GET `/api/v1/preorders` - List preorders (with pagination)
-  - [x] GET `/api/v1/preorders/{id}` - Get single preorder
-  - [x] PUT `/api/v1/preorders/{id}` - Update preorder
-  - [x] DELETE `/api/v1/preorders/{id}` - Delete preorder
+- [x] ✅ **Backend - Order Endpoints** `@claude`
+  - [x] POST `/api/v1/orders` - Create preorder
+  - [x] GET `/api/v1/orders` - List orders (with pagination)
+  - [x] GET `/api/v1/orders/{id}` - Get single preorder
+  - [x] PUT `/api/v1/orders/{id}` - Update preorder
+  - [x] DELETE `/api/v1/orders/{id}` - Delete preorder
   - [x] Add input validation (Pydantic)
   - [x] Add user ownership verification
 
@@ -125,7 +125,7 @@
   - [x] Create preorder mutation hooks
   - [x] Add error handling
 
-- [x] ✅ **Frontend - Preorder Form Component** `@claude`
+- [x] ✅ **Frontend - Order Form Component** `@claude`
   - [x] Create form with React Hook Form
   - [x] Add Zod validation schema
   - [x] Create form fields (all from PRD)
@@ -134,7 +134,7 @@
   - [ ] Add store name autocomplete (future enhancement)
   - [x] Create modal/dialog wrapper
 
-- [x] ✅ **Frontend - Preorder Table** `@claude`
+- [x] ✅ **Frontend - Order Table** `@claude`
   - [x] Create table component (custom table)
   - [ ] Add sortable columns (future enhancement)
   - [ ] Add pagination controls (future enhancement)
@@ -143,9 +143,9 @@
   - [x] Add empty state
   - [ ] Make responsive (cards on mobile) (future enhancement)
 
-- [x] ✅ **Frontend - Preorder Page** `@claude`
-  - [x] Create main preorders page (integrated into dashboard)
-  - [x] Add "New Preorder" button
+- [x] ✅ **Frontend - Order Page** `@claude`
+  - [x] Create main orders page (integrated into dashboard)
+  - [x] Add "New Order" button
   - [x] Integrate table component
   - [ ] Add delete confirmation modal (future enhancement)
   - [ ] Add success/error toasts (future enhancement)
@@ -182,7 +182,7 @@
 
 - [x] ✅ **Backend - Statistics Endpoint** `@claude`
   - [x] GET `/api/v1/analytics/statistics` endpoint
-  - [x] Calculate total preorders
+  - [x] Calculate total orders
   - [x] Calculate pending/delivered/sold counts
   - [x] Calculate total cost
   - [x] Calculate amount owing
@@ -199,7 +199,7 @@
 
 - [x] ✅ **Frontend - Summary Cards** `@claude`
   - [x] Create SummaryCards component
-  - [x] Display total preorders with status breakdown
+  - [x] Display total orders with status breakdown
   - [x] Display total cost
   - [x] Display amount owing
   - [x] Display total profit (from sold items)
@@ -218,7 +218,7 @@
   - [x] Add empty states for no data
 
 - [x] ✅ **Frontend - Dashboard Integration** `@claude`
-  - [x] Integrate analytics into PreordersView
+  - [x] Integrate analytics into OrdersView
   - [x] Add summary cards grid (6 cards)
   - [x] Add charts grid (2x2 layout)
   - [x] Filter integration (analytics update with filters)
@@ -231,8 +231,8 @@
 ### 3.1 Bulk Operations
 
 - [x] ✅ **Backend - Bulk Endpoints** `@claude`
-  - [x] POST `/api/v1/preorders/bulk-delete`
-  - [x] POST `/api/v1/preorders/bulk-update` (status and amount_paid)
+  - [x] POST `/api/v1/orders/bulk-delete`
+  - [x] POST `/api/v1/orders/bulk-update` (status and amount_paid)
   - [x] Add transaction support
   - [x] Return success/failed counts
 
@@ -248,13 +248,13 @@
 ### 3.2 Import / Export
 
 - [x] ✅ **Backend - CSV Export** `@claude`
-  - [x] GET `/api/v1/preorders/export` endpoint
-  - [x] Export all user preorders
+  - [x] GET `/api/v1/orders/export` endpoint
+  - [x] Export all user orders
   - [x] Include all columns + computed fields
   - [x] Stream CSV response with timestamp filename
 
 - [x] ✅ **Backend - CSV Import** `@claude`
-  - [x] POST `/api/v1/preorders/import` endpoint
+  - [x] POST `/api/v1/orders/import` endpoint
   - [x] Validate CSV structure
   - [x] Handle duplicates (skip/update/add options)
   - [x] Return import summary (imported/skipped/failed counts)
@@ -280,8 +280,8 @@
 ### 3.3 Backup & Restore
 
 - [x] ✅ **Backend - Backup Endpoints** `@claude`
-  - [x] GET `/api/v1/preorders/backup` - Manual backup (JSON format)
-  - [x] POST `/api/v1/preorders/restore` - Restore from JSON
+  - [x] GET `/api/v1/orders/backup` - Manual backup (JSON format)
+  - [x] POST `/api/v1/orders/restore` - Restore from JSON
   - [x] Add backup validation
   - [x] Full replace mode (deletes existing data)
   - [x] Return restore summary with error details
@@ -362,7 +362,7 @@
   - [x] Add "Export JSON" button (full backup)
   - [x] Add "Export CSV" button
   - [x] Add "Delete All Data" button with typed confirmation
-  - [x] Show data statistics (total preorders, value, profit)
+  - [x] Show data statistics (total orders, value, profit)
 
 ---
 
@@ -423,7 +423,7 @@
 - [ ] 🟢 **Frontend - Feature Gating** `@claude`
   - [ ] Create feature gate components
   - [ ] Show upgrade prompts for locked features
-  - [ ] Display limit warnings (e.g., "8/10 preorders")
+  - [ ] Display limit warnings (e.g., "8/10 orders")
   - [ ] Add tooltips for Pro features
 
 ---
@@ -752,7 +752,7 @@
 **Sprint Goal:** Get development environment running with authentication
 
 **Next Sprint:** Core CRUD Features
-**Sprint Goal:** Complete preorder management functionality
+**Sprint Goal:** Complete order management functionality
 
 ---
 

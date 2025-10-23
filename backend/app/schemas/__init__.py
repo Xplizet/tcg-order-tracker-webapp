@@ -1,11 +1,11 @@
 """
 Pydantic schemas for API requests/responses
 """
-from app.schemas.preorder import (
-    PreorderCreate,
-    PreorderResponse,
-    PreorderUpdate,
-    PreorderList,
+from app.schemas.order import (
+    OrderCreate,
+    OrderResponse,
+    OrderUpdate,
+    OrderList,
     BulkUpdateRequest,
     BulkUpdateResponse,
     BulkDeleteRequest,
@@ -13,10 +13,10 @@ from app.schemas.preorder import (
 )
 
 __all__ = [
-    "PreorderCreate",
-    "PreorderResponse",
-    "PreorderUpdate",
-    "PreorderList",
+    "OrderCreate",
+    "OrderResponse",
+    "OrderUpdate",
+    "OrderList",
     "BulkUpdateRequest",
     "BulkUpdateResponse",
     "BulkDeleteRequest",

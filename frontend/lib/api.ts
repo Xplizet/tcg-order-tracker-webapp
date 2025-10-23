@@ -3,9 +3,9 @@
  */
 
 /**
- * Preorder API types
+ * Order API types
  */
-export interface Preorder {
+export interface Order {
   id: string
   user_id: string
   product_name: string
@@ -27,7 +27,7 @@ export interface Preorder {
   updated_at: string
 }
 
-export interface PreorderCreate {
+export interface OrderCreate {
   product_name: string
   product_url?: string
   quantity: number
@@ -41,7 +41,7 @@ export interface PreorderCreate {
   notes?: string
 }
 
-export interface PreorderUpdate {
+export interface OrderUpdate {
   product_name?: string
   product_url?: string
   quantity?: number
@@ -55,8 +55,8 @@ export interface PreorderUpdate {
   notes?: string
 }
 
-export interface PreorderList {
-  preorders: Preorder[]
+export interface OrderList {
+  orders: Order[]
   total: number
   page: number
   page_size: number
@@ -65,7 +65,7 @@ export interface PreorderList {
 /**
  * API query parameters type
  */
-export interface PreorderListParams {
+export interface OrderListParams {
   page?: number
   page_size?: number
   status?: string
@@ -84,7 +84,7 @@ export interface PreorderListParams {
  * Analytics API types
  */
 export interface Statistics {
-  total_preorders: number
+  total_orders: number
   pending_count: number
   delivered_count: number
   sold_count: number
@@ -97,7 +97,7 @@ export interface Statistics {
 export interface SpendingByStore {
   store_name: string
   total_spent: number
-  preorder_count: number
+  order_count: number
 }
 
 export interface StatusOverview {
@@ -116,15 +116,15 @@ export interface ProfitByStore {
 export interface MonthlySpending {
   month: string
   total_spent: number
-  preorder_count: number
+  order_count: number
 }
 
 /**
  * Bulk Operations API types
  */
 export interface BulkUpdateRequest {
-  preorder_ids: string[]
-  update_data: PreorderUpdate
+  order_ids: string[]
+  update_data: OrderUpdate
 }
 
 export interface BulkUpdateResponse {
@@ -134,7 +134,7 @@ export interface BulkUpdateResponse {
 }
 
 export interface BulkDeleteRequest {
-  preorder_ids: string[]
+  order_ids: string[]
 }
 
 export interface BulkDeleteResponse {
@@ -176,8 +176,8 @@ export interface AdminStatistics {
   active_users_30d: number
   new_users_this_week: number
   new_users_this_month: number
-  total_preorders: number
-  avg_preorders_per_user: number
+  total_orders: number
+  avg_orders_per_user: number
   free_tier_users: number
   basic_tier_users: number
   pro_tier_users: number
@@ -214,7 +214,7 @@ export interface UserListItem {
   is_grandfathered: boolean
   is_admin: boolean
   created_at: string
-  preorders_count: number
+  orders_count: number
 }
 
 export interface UserTierUpdate {

@@ -2,17 +2,17 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { Statistics, PreorderListParams } from "@/lib/api"
+import type { Statistics, OrderListParams } from "@/lib/api"
 
 interface SummaryCardsProps {
-  filters: PreorderListParams
+  filters: OrderListParams
 }
 
 export function SummaryCards({ filters }: SummaryCardsProps) {
   const { apiRequest } = useApi()
 
   // Build query string from filters
-  const buildQueryString = (params: PreorderListParams) => {
+  const buildQueryString = (params: OrderListParams) => {
     const searchParams = new URLSearchParams()
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "" && key !== "page" && key !== "page_size" && key !== "sort_by" && key !== "sort_order") {
@@ -58,10 +58,10 @@ export function SummaryCards({ filters }: SummaryCardsProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* Total Preorders */}
+      {/* Total Orders */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-sm font-medium text-gray-500 mb-2">Total Preorders</h3>
-        <p className="text-3xl font-bold text-gray-900">{stats.total_preorders}</p>
+        <h3 className="text-sm font-medium text-gray-500 mb-2">Total Orders</h3>
+        <p className="text-3xl font-bold text-gray-900">{stats.total_orders}</p>
         <div className="mt-2 text-sm text-gray-600">
           <span className="text-yellow-600">{stats.pending_count} Pending</span>
           {" • "}

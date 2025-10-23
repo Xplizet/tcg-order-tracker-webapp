@@ -2,11 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { SpendingByStore, StatusOverview, ProfitByStore, MonthlySpending, PreorderListParams } from "@/lib/api"
+import type { SpendingByStore, StatusOverview, ProfitByStore, MonthlySpending, OrderListParams } from "@/lib/api"
 import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 interface AnalyticsChartsProps {
-  filters: PreorderListParams
+  filters: OrderListParams
 }
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"]
@@ -15,7 +15,7 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
   const { apiRequest } = useApi()
 
   // Build query string (excluding pagination/sorting)
-  const buildQueryString = (params: PreorderListParams) => {
+  const buildQueryString = (params: OrderListParams) => {
     const searchParams = new URLSearchParams()
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "" &&

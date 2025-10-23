@@ -51,7 +51,7 @@ async def clerk_webhook(request: Request, db: Session = Depends(get_db)):
                 logger.info(f"Updated user: {user.email}")
 
         elif event_type == "user.deleted":
-            # Delete user (cascade will delete preorders)
+            # Delete user (cascade will delete orders)
             user = db.query(User).filter(User.id == data.get("id")).first()
             if user:
                 db.delete(user)

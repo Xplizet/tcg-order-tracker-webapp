@@ -38,8 +38,8 @@ class AdminStatistics(BaseModel):
     active_users_30d: int
     new_users_this_week: int
     new_users_this_month: int
-    total_preorders: int
-    avg_preorders_per_user: float
+    total_orders: int
+    avg_orders_per_user: float
     free_tier_users: int
     basic_tier_users: int
     pro_tier_users: int
@@ -56,7 +56,7 @@ class UserListItem(BaseModel):
     is_grandfathered: bool
     is_admin: bool
     created_at: datetime
-    preorders_count: int
+    orders_count: int
 
     class Config:
         from_attributes = True

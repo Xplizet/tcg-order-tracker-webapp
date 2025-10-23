@@ -134,7 +134,7 @@ export function UserManagementTab() {
                     Tier
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Preorders
+                    Orders
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -181,7 +181,7 @@ export function UserManagementTab() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {user.preorders_count}
+                      {user.orders_count}
                     </td>
                     <td className="px-6 py-4">
                       {user.is_grandfathered && (
