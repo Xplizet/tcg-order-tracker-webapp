@@ -42,7 +42,7 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
   ].filter(Boolean).length
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4 space-y-4">
+    <div className="bg-card text-card-foreground rounded-lg shadow p-4 mb-4 space-y-4 border border-border">
       {/* Search Bar */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <input
@@ -50,11 +50,11 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search products, stores, or notes..."
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
         >
           Search
         </button>
@@ -64,13 +64,13 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Status
           </label>
           <select
             value={filters.status || ""}
             onChange={(e) => handleFilterChange("status", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">All Statuses</option>
             <option value="Pending">Pending</option>
@@ -81,7 +81,7 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
 
         {/* Store Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Store
           </label>
           <input
@@ -89,59 +89,59 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
             value={filters.store || ""}
             onChange={(e) => handleFilterChange("store", e.target.value)}
             placeholder="Filter by store..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Order Date From */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Order Date From
           </label>
           <input
             type="date"
             value={filters.order_date_from || ""}
             onChange={(e) => handleFilterChange("order_date_from", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Order Date To */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Order Date To
           </label>
           <input
             type="date"
             value={filters.order_date_to || ""}
             onChange={(e) => handleFilterChange("order_date_to", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Release Date From */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Release Date From
           </label>
           <input
             type="date"
             value={filters.release_date_from || ""}
             onChange={(e) => handleFilterChange("release_date_from", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Release Date To */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Release Date To
           </label>
           <input
             type="date"
             value={filters.release_date_to || ""}
             onChange={(e) => handleFilterChange("release_date_to", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -152,9 +152,9 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
               type="checkbox"
               checked={filters.amount_owing_only || false}
               onChange={(e) => handleFilterChange("amount_owing_only", e.target.checked || undefined)}
-              className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="mr-2 h-4 w-4 text-primary focus:ring-ring border-input rounded"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-foreground">
               Amount Owing Only
             </span>
           </label>
@@ -163,13 +163,13 @@ export function OrderFilters({ filters, onFiltersChange }: OrderFiltersProps) {
 
       {/* Active Filters & Clear */}
       {activeFiltersCount > 0 && (
-        <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-          <span className="text-sm text-gray-600">
+        <div className="flex items-center justify-between pt-2 border-t border-border">
+          <span className="text-sm text-muted-foreground">
             {activeFiltersCount} filter{activeFiltersCount > 1 ? "s" : ""} active
           </span>
           <button
             onClick={handleClearFilters}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-primary hover:text-primary/80 font-medium"
           >
             Clear all filters
           </button>

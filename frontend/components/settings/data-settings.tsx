@@ -107,23 +107,23 @@ export function DataSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Data Overview</h2>
 
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600">Total Orders</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total_orders || 0}</div>
+            <div className="bg-muted/20 rounded-lg p-4">
+              <div className="text-sm text-muted-foreground">Total Orders</div>
+              <div className="text-2xl font-bold text-foreground">{stats.total_orders || 0}</div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600">Total Value</div>
-              <div className="text-2xl font-bold text-gray-900">
+            <div className="bg-muted/20 rounded-lg p-4">
+              <div className="text-sm text-muted-foreground">Total Value</div>
+              <div className="text-2xl font-bold text-foreground">
                 ${Number(stats.total_cost || 0).toFixed(2)}
               </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm text-gray-600">Total Profit</div>
+            <div className="bg-muted/20 rounded-lg p-4">
+              <div className="text-sm text-muted-foreground">Total Profit</div>
               <div className={`text-2xl font-bold ${Number(stats.total_profit || 0) >= 0 ? "text-green-600" : "text-red-600"}`}>
                 ${Number(stats.total_profit || 0).toFixed(2)}
               </div>
@@ -132,13 +132,13 @@ export function DataSettings() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Export Data</h2>
 
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Export as JSON (Full Backup)</h3>
-            <p className="text-sm text-gray-600 mb-3">
+            <h3 className="text-sm font-medium text-foreground mb-2">Export as JSON (Full Backup)</h3>
+            <p className="text-sm text-muted-foreground mb-3">
               Download all your data as a JSON file. This includes all order information and can be used to restore your data later.
             </p>
             <button
@@ -150,8 +150,8 @@ export function DataSettings() {
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Export as CSV</h3>
-            <p className="text-sm text-gray-600 mb-3">
+            <h3 className="text-sm font-medium text-foreground mb-2">Export as CSV</h3>
+            <p className="text-sm text-muted-foreground mb-3">
               Download your data as a CSV file for use in spreadsheet applications like Excel or Google Sheets.
             </p>
             <button
@@ -164,12 +164,12 @@ export function DataSettings() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4 text-red-700">Danger Zone</h2>
 
         <div>
-          <h3 className="text-sm font-medium text-gray-700 mb-2">Delete All Data</h3>
-          <p className="text-sm text-gray-600 mb-3">
+          <h3 className="text-sm font-medium text-foreground mb-2">Delete All Data</h3>
+          <p className="text-sm text-muted-foreground mb-3">
             Permanently delete all your orders. This action cannot be undone. We recommend exporting your data first.
           </p>
           <button
@@ -184,7 +184,7 @@ export function DataSettings() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4 text-red-600">
               Delete All Data?
             </h3>
@@ -196,21 +196,21 @@ export function DataSettings() {
               </p>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               Type <strong>DELETE</strong> to confirm:
             </p>
 
             <input
               type="text"
               id="delete-confirm"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4"
+              className="w-full px-3 py-2 border border-input rounded-lg mb-4"
               placeholder="Type DELETE"
             />
 
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-input rounded-lg hover:bg-muted/20"
               >
                 Cancel
               </button>

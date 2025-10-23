@@ -28,25 +28,44 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
 
   const queryString = buildQueryString(filters)
 
-  const { data: spendingByStore } = useQuery({
+  const { data: spendingByStoreRaw, isLoading: loadingSpending } = useQuery({
     queryKey: ["spending-by-store", queryString],
     queryFn: () => apiRequest<SpendingByStore[]>(`/api/v1/analytics/spending-by-store?${queryString}`),
   })
 
-  const { data: statusOverview } = useQuery({
+  // Convert string decimals to numbers for charts
+  const spendingByStore = spendingByStoreRaw?.map(item => ({
+    ...item,
+    total_spent: typeof item.total_spent === 'string' ? parseFloat(item.total_spent) : item.total_spent
+  }))
+
+  const { data: statusOverview, isLoading: loadingStatus } = useQuery({
     queryKey: ["status-overview", queryString],
     queryFn: () => apiRequest<StatusOverview[]>(`/api/v1/analytics/status-overview?${queryString}`),
   })
 
-  const { data: profitByStore } = useQuery({
+  const { data: profitByStoreRaw, isLoading: loadingProfit } = useQuery({
     queryKey: ["profit-by-store", queryString],
     queryFn: () => apiRequest<ProfitByStore[]>(`/api/v1/analytics/profit-by-store?${queryString}`),
   })
 
-  const { data: monthlySpending } = useQuery({
+  // Convert string decimals to numbers for charts
+  const profitByStore = profitByStoreRaw?.map(item => ({
+    ...item,
+    total_profit: typeof item.total_profit === 'string' ? parseFloat(item.total_profit) : item.total_profit,
+    avg_profit_margin: typeof item.avg_profit_margin === 'string' ? parseFloat(item.avg_profit_margin) : item.avg_profit_margin
+  }))
+
+  const { data: monthlySpendingRaw, isLoading: loadingMonthly } = useQuery({
     queryKey: ["monthly-spending", queryString],
     queryFn: () => apiRequest<MonthlySpending[]>(`/api/v1/analytics/monthly-spending?${queryString}`),
   })
+
+  // Convert string decimals to numbers for charts
+  const monthlySpending = monthlySpendingRaw?.map(item => ({
+    ...item,
+    total_spent: typeof item.total_spent === 'string' ? parseFloat(item.total_spent) : item.total_spent
+  }))
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -58,11 +77,20 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
       {/* Spending by Store - Pie Chart */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-4 sm:p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Spending by Store</h3>
-        {spendingByStore && spendingByStore.length > 0 ? (
+        {loadingSpending ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="space-y-3 w-full">
+              <div className="h-6 bg-muted rounded w-3/4 mx-auto animate-pulse"></div>
+              <div className="h-6 bg-muted rounded w-2/3 mx-auto animate-pulse"></div>
+              <div className="h-6 bg-muted rounded w-1/2 mx-auto animate-pulse"></div>
+              <div className="h-48 bg-muted rounded-full w-48 mx-auto animate-pulse mt-8"></div>
+            </div>
+          </div>
+        ) : spendingByStore && spendingByStore.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -82,16 +110,25 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-gray-500">
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
             No data available
           </div>
         )}
       </div>
 
       {/* Status Overview - Donut Chart */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-4 sm:p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Status Overview</h3>
-        {statusOverview && statusOverview.length > 0 ? (
+        {loadingStatus ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="space-y-3 w-full">
+              <div className="h-6 bg-muted rounded w-3/4 mx-auto animate-pulse"></div>
+              <div className="h-6 bg-muted rounded w-2/3 mx-auto animate-pulse"></div>
+              <div className="h-6 bg-muted rounded w-1/2 mx-auto animate-pulse"></div>
+              <div className="h-48 bg-muted rounded-full w-48 mx-auto animate-pulse mt-8"></div>
+            </div>
+          </div>
+        ) : statusOverview && statusOverview.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -118,16 +155,27 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-gray-500">
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
             No data available
           </div>
         )}
       </div>
 
       {/* Profit by Store - Bar Chart */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-4 sm:p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Profit by Store</h3>
-        {profitByStore && profitByStore.length > 0 ? (
+        {loadingProfit ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="space-y-2 w-full px-8">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-end gap-2">
+                  <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
+                  <div className={`bg-muted rounded-t animate-pulse`} style={{ height: `${40 + i * 30}px`, width: '100%' }}></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : profitByStore && profitByStore.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={profitByStore}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -139,16 +187,31 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-gray-500">
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
             No sold items yet
           </div>
         )}
       </div>
 
       {/* Monthly Spending - Line Chart */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-4 sm:p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Monthly Spending</h3>
-        {monthlySpending && monthlySpending.length > 0 ? (
+        {loadingMonthly ? (
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="space-y-2 w-full px-8">
+              <div className="flex items-end justify-between h-48">
+                {[80, 120, 95, 110, 75, 130, 100, 90].map((height, i) => (
+                  <div key={i} className={`bg-muted rounded-t animate-pulse w-8`} style={{ height: `${height}px` }}></div>
+                ))}
+              </div>
+              <div className="flex justify-between">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="h-4 bg-muted rounded w-12 animate-pulse"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : monthlySpending && monthlySpending.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={monthlySpending}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -160,7 +223,7 @@ export function AnalyticsCharts({ filters }: AnalyticsChartsProps) {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-gray-500">
+          <div className="flex items-center justify-center h-[300px] text-muted-foreground">
             No data available
           </div>
         )}

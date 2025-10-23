@@ -69,7 +69,7 @@ export function NotificationSettings() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Release Reminders</h2>
 
         <div className="space-y-4">
@@ -81,16 +81,16 @@ export function NotificationSettings() {
               onChange={(e) =>
                 setFormData({ ...formData, release_reminders_enabled: e.target.checked })
               }
-              className="h-4 w-4 text-blue-600 rounded border-gray-300"
+              className="h-4 w-4 text-primary rounded border-input"
             />
-            <label htmlFor="release-reminders" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="release-reminders" className="ml-2 block text-sm text-foreground">
               Send me reminders about upcoming release dates
             </label>
           </div>
 
           {formData.release_reminders_enabled && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Remind me this many days before release:
               </label>
               <select
@@ -98,7 +98,7 @@ export function NotificationSettings() {
                 onChange={(e) =>
                   setFormData({ ...formData, release_reminder_days: Number(e.target.value) })
                 }
-                className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full max-w-xs px-3 py-2 border border-input rounded-lg"
               >
                 <option value={1}>1 day</option>
                 <option value={3}>3 days</option>
@@ -111,7 +111,7 @@ export function NotificationSettings() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Payment Reminders</h2>
 
         <div className="space-y-4">
@@ -123,20 +123,20 @@ export function NotificationSettings() {
               onChange={(e) =>
                 setFormData({ ...formData, payment_reminders_enabled: e.target.checked })
               }
-              className="h-4 w-4 text-blue-600 rounded border-gray-300"
+              className="h-4 w-4 text-primary rounded border-input"
             />
-            <label htmlFor="payment-reminders" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="payment-reminders" className="ml-2 block text-sm text-foreground">
               Send me reminders about outstanding payments
             </label>
           </div>
 
           {formData.payment_reminders_enabled && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Only remind me when amount owing is at least:
               </label>
               <div className="flex items-center max-w-xs">
-                <span className="text-gray-500 mr-2">$</span>
+                <span className="text-muted-foreground mr-2">$</span>
                 <input
                   type="number"
                   min="0"
@@ -145,7 +145,7 @@ export function NotificationSettings() {
                   onChange={(e) =>
                     setFormData({ ...formData, payment_threshold: Number(e.target.value) })
                   }
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                  className="flex-1 px-3 py-2 border border-input rounded-lg"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ export function NotificationSettings() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Digest Emails</h2>
 
         <div className="space-y-4">
@@ -165,9 +165,9 @@ export function NotificationSettings() {
               onChange={(e) =>
                 setFormData({ ...formData, weekly_digest_enabled: e.target.checked })
               }
-              className="h-4 w-4 text-blue-600 rounded border-gray-300"
+              className="h-4 w-4 text-primary rounded border-input"
             />
-            <label htmlFor="weekly-digest" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="weekly-digest" className="ml-2 block text-sm text-foreground">
               Send me a weekly digest of my orders
             </label>
           </div>
@@ -180,9 +180,9 @@ export function NotificationSettings() {
               onChange={(e) =>
                 setFormData({ ...formData, monthly_digest_enabled: e.target.checked })
               }
-              className="h-4 w-4 text-blue-600 rounded-border-gray-300"
+              className="h-4 w-4 text-primary rounded-border-input"
             />
-            <label htmlFor="monthly-digest" className="ml-2 block text-sm text-gray-900">
+            <label htmlFor="monthly-digest" className="ml-2 block text-sm text-foreground">
               Send me a monthly summary report
             </label>
           </div>
@@ -190,10 +190,10 @@ export function NotificationSettings() {
 
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Test Email Notifications</h2>
 
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Send a test email to verify that your email notifications are working correctly.
         </p>
 
@@ -212,7 +212,7 @@ export function NotificationSettings() {
           type="button"
           onClick={() => sendTestEmail.mutate()}
           disabled={sendTestEmail.isPending}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          className="px-6 py-2 border border-input text-foreground rounded-lg hover:bg-muted/20 disabled:opacity-50"
         >
           {sendTestEmail.isPending ? "Sending..." : "Send Test Email"}
         </button>

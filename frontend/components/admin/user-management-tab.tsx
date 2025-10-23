@@ -59,12 +59,12 @@ export function UserManagementTab() {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Filter Users</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Search by Email
             </label>
             <input
@@ -72,18 +72,18 @@ export function UserManagementTab() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="user@example.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border border-input rounded-lg"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Filter by Tier
             </label>
             <select
               value={tierFilter}
               onChange={(e) => setTierFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border border-input rounded-lg"
             >
               <option value="">All Tiers</option>
               <option value="free">Free</option>
@@ -93,13 +93,13 @@ export function UserManagementTab() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Grandfathered Status
             </label>
             <select
               value={grandfatheredFilter}
               onChange={(e) => setGrandfatheredFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border border-input rounded-lg"
             >
               <option value="">All Users</option>
               <option value="true">Grandfathered Only</option>
@@ -110,49 +110,49 @@ export function UserManagementTab() {
       </div>
 
       {/* User List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-card text-card-foreground rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b">
           <h3 className="text-lg font-semibold">Users</h3>
           {users && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Showing {users.length} user{users.length !== 1 ? "s" : ""}
             </p>
           )}
         </div>
 
         {isLoading ? (
-          <div className="p-6 text-center text-gray-500">Loading users...</div>
+          <div className="p-6 text-center text-muted-foreground">Loading users...</div>
         ) : users && users.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-muted/20">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Tier
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Orders
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Joined
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card text-card-foreground divide-y divide-gray-200">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user.id} className="hover:bg-muted/20">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {user.email}
                           {user.is_admin && (
                             <span className="ml-2 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">
@@ -161,7 +161,7 @@ export function UserManagementTab() {
                           )}
                         </div>
                         {(user.first_name || user.last_name) && (
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             {user.first_name} {user.last_name}
                           </div>
                         )}
@@ -171,7 +171,7 @@ export function UserManagementTab() {
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded ${
                           user.tier === "free"
-                            ? "bg-gray-100 text-gray-800"
+                            ? "bg-muted/30 text-foreground"
                             : user.tier === "basic"
                             ? "bg-blue-100 text-blue-800"
                             : "bg-purple-100 text-purple-800"
@@ -180,7 +180,7 @@ export function UserManagementTab() {
                         {user.tier.toUpperCase()}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-foreground">
                       {user.orders_count}
                     </td>
                     <td className="px-6 py-4">
@@ -190,7 +190,7 @@ export function UserManagementTab() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
@@ -199,7 +199,7 @@ export function UserManagementTab() {
                           setSelectedUser(user)
                           setNewTier(user.tier)
                         }}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        className="text-primary hover:text-blue-800 text-sm font-medium"
                       >
                         Change Tier
                       </button>
@@ -210,7 +210,7 @@ export function UserManagementTab() {
             </table>
           </div>
         ) : (
-          <div className="p-6 text-center text-gray-500">
+          <div className="p-6 text-center text-muted-foreground">
             No users found matching your filters.
           </div>
         )}
@@ -219,25 +219,25 @@ export function UserManagementTab() {
       {/* Change Tier Modal */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Change User Tier</h3>
 
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 <strong>User:</strong> {selectedUser.email}
               </p>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 <strong>Current Tier:</strong>{" "}
                 <span className="font-semibold uppercase">{selectedUser.tier}</span>
               </p>
 
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 New Tier
               </label>
               <select
                 value={newTier}
                 onChange={(e) => setNewTier(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2 border border-input rounded-lg"
               >
                 <option value="free">Free</option>
                 <option value="basic">Basic</option>
@@ -258,7 +258,7 @@ export function UserManagementTab() {
                   setSelectedUser(null)
                   setNewTier("")
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-input rounded-lg hover:bg-muted/20"
               >
                 Cancel
               </button>

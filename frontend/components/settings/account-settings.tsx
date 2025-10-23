@@ -11,33 +11,33 @@ export function AccountSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Email
             </label>
-            <div className="text-gray-900">
+            <div className="text-foreground">
               {user.primaryEmailAddress?.emailAddress}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               User ID
             </label>
-            <div className="text-gray-600 text-sm font-mono">
+            <div className="text-muted-foreground text-sm font-mono">
               {user.id}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Account Created
             </label>
-            <div className="text-gray-900">
+            <div className="text-foreground">
               {new Date(user.createdAt!).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -48,28 +48,28 @@ export function AccountSettings() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h2 className="text-xl font-semibold mb-4">Account Management</h2>
 
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Password</h3>
-            <p className="text-sm text-gray-600 mb-3">
+            <h3 className="text-sm font-medium text-foreground mb-2">Password</h3>
+            <p className="text-sm text-muted-foreground mb-3">
               Manage your password through your Clerk account.
             </p>
             <a
               href={`https://accounts.clerk.com/user`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              className="inline-flex items-center px-4 py-2 border border-input rounded-lg text-sm font-medium text-foreground bg-card text-card-foreground hover:bg-muted/20"
             >
               Manage Account
             </a>
           </div>
 
-          <div className="border-t border-gray-200 pt-4">
+          <div className="border-t border-border pt-4">
             <h3 className="text-sm font-medium text-red-700 mb-2">Danger Zone</h3>
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-muted-foreground mb-3">
               Once you delete your account, there is no going back. Please be certain.
             </p>
             <button

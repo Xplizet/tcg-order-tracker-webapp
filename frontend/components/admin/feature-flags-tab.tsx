@@ -83,14 +83,14 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
   return (
     <div className="space-y-6">
       {/* Subscriptions Section */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Subscription System</h3>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between py-3 border-b">
             <div>
               <div className="font-medium">Enable Subscriptions</div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted-foreground">
                 Activates paid tiers and enforces tier limits
               </div>
             </div>
@@ -104,7 +104,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                 className="sr-only peer"
                 disabled={settings.subscriptions_enabled}
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card text-card-foreground after:border-input after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
 
@@ -134,12 +134,12 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
       </div>
 
       {/* Tier Limits Section */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Tier Limits</h3>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Free Tier Max Orders
             </label>
             <div className="flex items-center gap-2">
@@ -154,19 +154,19 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                   })
                 }
                 placeholder="Unlimited"
-                className="flex-1 max-w-xs px-3 py-2 border border-gray-300 rounded-lg"
+                className="flex-1 max-w-xs px-3 py-2 border border-input rounded-lg"
               />
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 (leave empty for unlimited)
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Current: {settings.free_tier_limit ?? "Unlimited"}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Basic Tier Max Orders
             </label>
             <div className="flex items-center gap-2">
@@ -181,19 +181,19 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                   })
                 }
                 placeholder="Unlimited"
-                className="flex-1 max-w-xs px-3 py-2 border border-gray-300 rounded-lg"
+                className="flex-1 max-w-xs px-3 py-2 border border-input rounded-lg"
               />
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 (leave empty for unlimited)
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Current: {settings.basic_tier_limit ?? "Unlimited"}
             </p>
           </div>
 
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">
+          <div className="p-3 bg-muted/20 rounded-lg">
+            <p className="text-sm text-muted-foreground">
               <strong>Pro Tier:</strong> Always unlimited
             </p>
           </div>
@@ -209,14 +209,14 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
       </div>
 
       {/* Maintenance Mode Section */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow p-6 border border-border">
         <h3 className="text-lg font-semibold mb-4">Maintenance Mode</h3>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between py-3 border-b">
             <div>
               <div className="font-medium">Maintenance Mode</div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted-foreground">
                 Shows maintenance page to all non-admin users
               </div>
             </div>
@@ -229,13 +229,13 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                 }
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card text-card-foreground after:border-input after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
             </label>
           </div>
 
           {formData.maintenance_mode && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Maintenance Message
               </label>
               <textarea
@@ -245,7 +245,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                 }
                 placeholder="We're performing scheduled maintenance. We'll be back soon!"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2 border border-input rounded-lg"
               />
             </div>
           )}
@@ -269,7 +269,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
       {/* Subscription Warning Modal */}
       {showSubscriptionWarning && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4 text-orange-600">
               Warning: Enable Subscriptions?
             </h3>
@@ -286,7 +286,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
               </ul>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               Are you sure you want to enable subscriptions?
             </p>
 
@@ -296,7 +296,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                   setShowSubscriptionWarning(false)
                   setFormData({ ...formData, subscriptions_enabled: false })
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-input rounded-lg hover:bg-muted/20"
               >
                 Cancel
               </button>
@@ -315,12 +315,12 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
       {/* Maintenance Confirmation Modal */}
       {showMaintenanceConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4 text-red-600">
               Enable Maintenance Mode?
             </h3>
 
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               This will show a maintenance page to all non-admin users. They won't be able to access the application until you disable maintenance mode.
             </p>
 
@@ -330,7 +330,7 @@ export function FeatureFlagsTab({ settings }: FeatureFlagsTabProps) {
                   setShowMaintenanceConfirm(false)
                   setFormData({ ...formData, maintenance_mode: false })
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-input rounded-lg hover:bg-muted/20"
               >
                 Cancel
               </button>
