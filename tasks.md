@@ -180,46 +180,49 @@
 
 ### 2.4 Dashboard & Analytics
 
-- [ ] 🟢 **Backend - Statistics Endpoint** `@claude`
-  - [ ] GET `/api/v1/statistics` endpoint
-  - [ ] Calculate total preorders
-  - [ ] Calculate pending/delivered/sold counts
-  - [ ] Calculate total cost
-  - [ ] Calculate amount owing
-  - [ ] Calculate total profit
-  - [ ] Add caching for performance
+- [x] ✅ **Backend - Statistics Endpoint** `@claude`
+  - [x] GET `/api/v1/analytics/statistics` endpoint
+  - [x] Calculate total preorders
+  - [x] Calculate pending/delivered/sold counts
+  - [x] Calculate total cost
+  - [x] Calculate amount owing
+  - [x] Calculate total profit
+  - [x] Calculate average profit margin
+  - [ ] Add caching for performance (future enhancement)
 
-- [ ] 🟢 **Backend - Analytics Endpoints** `@claude`
-  - [ ] GET `/api/v1/analytics/spending-by-store`
-  - [ ] GET `/api/v1/analytics/status-overview`
-  - [ ] GET `/api/v1/analytics/profit-by-store`
-  - [ ] GET `/api/v1/analytics/monthly-spending`
-  - [ ] Apply filters to analytics
+- [x] ✅ **Backend - Analytics Endpoints** `@claude`
+  - [x] GET `/api/v1/analytics/spending-by-store`
+  - [x] GET `/api/v1/analytics/status-overview`
+  - [x] GET `/api/v1/analytics/profit-by-store`
+  - [x] GET `/api/v1/analytics/monthly-spending`
+  - [x] Apply filters to all analytics endpoints
 
-- [ ] 🟢 **Frontend - Summary Cards** `@claude`
-  - [ ] Create stat card component
-  - [ ] Display total preorders
-  - [ ] Display pending/delivered/sold
-  - [ ] Display total cost
-  - [ ] Display amount owing
-  - [ ] Display total profit
-  - [ ] Add loading skeletons
+- [x] ✅ **Frontend - Summary Cards** `@claude`
+  - [x] Create SummaryCards component
+  - [x] Display total preorders with status breakdown
+  - [x] Display total cost
+  - [x] Display amount owing
+  - [x] Display total profit (from sold items)
+  - [x] Display average profit margin
+  - [x] Display amount paid
+  - [x] Add loading skeletons
 
-- [ ] 🟢 **Frontend - Charts** `@claude`
-  - [ ] Setup Recharts
-  - [ ] Create "Spending by Store" pie chart
-  - [ ] Create "Status Overview" donut chart
-  - [ ] Create "Profit by Store" bar chart
-  - [ ] Create "Monthly Spending" line chart
-  - [ ] Make charts responsive
-  - [ ] Add interactive tooltips
+- [x] ✅ **Frontend - Charts** `@claude`
+  - [x] Setup Recharts
+  - [x] Create "Spending by Store" pie chart
+  - [x] Create "Status Overview" donut chart with color coding
+  - [x] Create "Profit by Store" bar chart
+  - [x] Create "Monthly Spending" line chart
+  - [x] Make charts responsive
+  - [x] Add interactive tooltips
+  - [x] Add empty states for no data
 
-- [ ] 🟢 **Frontend - Dashboard Page** `@claude`
-  - [ ] Create dashboard layout
-  - [ ] Add summary cards grid
-  - [ ] Add charts grid (2x2)
-  - [ ] Add quick actions section
-  - [ ] Test with filters
+- [x] ✅ **Frontend - Dashboard Integration** `@claude`
+  - [x] Integrate analytics into PreordersView
+  - [x] Add summary cards grid (6 cards)
+  - [x] Add charts grid (2x2 layout)
+  - [x] Filter integration (analytics update with filters)
+  - [x] Responsive layouts
 
 ---
 
