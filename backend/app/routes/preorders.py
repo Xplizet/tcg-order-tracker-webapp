@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app.database import get_db
 from app.models import Preorder
-from app.schemas import PreorderCreate, PreorderResponse, PreorderList
+from app.schemas import PreorderCreate, PreorderResponse, PreorderList, PreorderUpdate
 from app.utils.auth import get_current_user_id
 import logging
 
@@ -114,3 +114,75 @@ def get_preorder(
         raise HTTPException(status_code=404, detail="Preorder not found")
 
     return preorder
+
+
+@router.put("/{preorder_id}", response_model=PreorderResponse)
+def update_preorder(
+    preorder_id: str,
+    preorder_update: PreorderUpdate,
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+):
+    """
+    Update a preorder by ID
+    """
+    try:
+        # Find preorder with row-level security check
+        preorder = db.query(Preorder).filter(
+            Preorder.id == preorder_id,
+            Preorder.user_id == user_id
+        ).first()
+
+        if not preorder:
+            raise HTTPException(status_code=404, detail="Preorder not found")
+
+        # Update only provided fields
+        update_data = preorder_update.model_dump(exclude_unset=True)
+        for field, value in update_data.items():
+            setattr(preorder, field, value)
+
+        db.commit()
+        db.refresh(preorder)
+
+        logger.info(f"Updated preorder {preorder_id} for user {user_id}")
+        return preorder
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error updating preorder: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update preorder: {str(e)}")
+
+
+@router.delete("/{preorder_id}", status_code=204)
+def delete_preorder(
+    preorder_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a preorder by ID
+    """
+    try:
+        # Find preorder with row-level security check
+        preorder = db.query(Preorder).filter(
+            Preorder.id == preorder_id,
+            Preorder.user_id == user_id
+        ).first()
+
+        if not preorder:
+            raise HTTPException(status_code=404, detail="Preorder not found")
+
+        db.delete(preorder)
+        db.commit()
+
+        logger.info(f"Deleted preorder {preorder_id} for user {user_id}")
+        return None
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error deleting preorder: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete preorder: {str(e)}")

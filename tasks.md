@@ -113,8 +113,8 @@
   - [x] POST `/api/v1/preorders` - Create preorder
   - [x] GET `/api/v1/preorders` - List preorders (with pagination)
   - [x] GET `/api/v1/preorders/{id}` - Get single preorder
-  - [ ] PUT `/api/v1/preorders/{id}` - Update preorder
-  - [ ] DELETE `/api/v1/preorders/{id}` - Delete preorder
+  - [x] PUT `/api/v1/preorders/{id}` - Update preorder
+  - [x] DELETE `/api/v1/preorders/{id}` - Delete preorder
   - [x] Add input validation (Pydantic)
   - [x] Add user ownership verification
 
