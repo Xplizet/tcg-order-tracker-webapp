@@ -4,7 +4,7 @@ A modern cloud-based web application for tracking TCG (Trading Card Game) orders
 
 **Repository:** https://github.com/Xplizet/tcg-order-tracker-webapp
 
-**Status:** Phase 2 - Core Features (CRUD Complete)
+**Status:** Phase 7 - UI/UX Polish (Complete)
 
 ## Tech Stack
 
@@ -128,6 +128,7 @@ You'll need to create accounts and configure the following services:
 1. **Supabase** - Database & Storage
    - Create project at https://supabase.com
    - Get connection string and API keys
+   - **Important:** Connection pooling is configured for free tier (5 connections max)
 
 2. **Clerk** - Authentication
    - Create application at https://clerk.com
