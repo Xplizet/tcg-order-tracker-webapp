@@ -33,10 +33,10 @@ export function OrdersView() {
     <div>
       <SummaryCards filters={filters} />
       <AnalyticsCharts filters={filters} />
-      <div className="mb-6 flex justify-end">
+      <OrderFilters filters={filters} onFiltersChange={handleFiltersChange} />
+      <div className="mb-4 flex justify-end">
         <CsvImportExport />
       </div>
-      <OrderFilters filters={filters} onFiltersChange={handleFiltersChange} />
       <OrderTable filters={filters} onSortChange={handleSortChange} />
     </div>
   )
