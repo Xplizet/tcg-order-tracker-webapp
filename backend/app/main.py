@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import routers
-from app.routes import preorders, webhooks, analytics, notifications
+from app.routes import preorders, webhooks, analytics, notifications, admin
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -68,3 +68,4 @@ app.include_router(webhooks.router, prefix="/api/webhooks", tags=["webhooks"])
 app.include_router(preorders.router, prefix="/api/v1/preorders", tags=["preorders"])
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
 app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])

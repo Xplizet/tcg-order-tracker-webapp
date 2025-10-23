@@ -166,3 +166,57 @@ export interface NotificationPreferencesUpdate {
   weekly_digest_enabled?: boolean
   monthly_digest_enabled?: boolean
 }
+
+/**
+ * Admin API types
+ */
+export interface AdminStatistics {
+  total_users: number
+  active_users_7d: number
+  active_users_30d: number
+  new_users_this_week: number
+  new_users_this_month: number
+  total_preorders: number
+  avg_preorders_per_user: number
+  free_tier_users: number
+  basic_tier_users: number
+  pro_tier_users: number
+  grandfathered_users: number
+}
+
+export interface SystemSettings {
+  id: string
+  subscriptions_enabled: boolean
+  grandfather_date: string | null
+  free_tier_limit: number | null
+  basic_tier_limit: number | null
+  maintenance_mode: boolean
+  maintenance_message: string | null
+  extra_settings: Record<string, any> | null
+  created_at: string
+  updated_at: string
+}
+
+export interface SystemSettingsUpdate {
+  subscriptions_enabled?: boolean
+  free_tier_limit?: number | null
+  basic_tier_limit?: number | null
+  maintenance_mode?: boolean
+  maintenance_message?: string | null
+}
+
+export interface UserListItem {
+  id: string
+  email: string
+  first_name: string | null
+  last_name: string | null
+  tier: string
+  is_grandfathered: boolean
+  is_admin: boolean
+  created_at: string
+  preorders_count: number
+}
+
+export interface UserTierUpdate {
+  tier: string
+}
