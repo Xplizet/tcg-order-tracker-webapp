@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TCG Preorder Tracker is a monorepo web application for tracking Trading Card Game preorders. It consists of a Next.js frontend and FastAPI backend, designed to transform a desktop application into a cloud-based SaaS product with subscription tiers.
 
-**Current Status:** Phase 1 Development (Foundation)
+**Repository:** https://github.com/Xplizet/tcg-order-tracker-webapp
+**Current Status:** Phase 2 - Core Features (CRUD Complete)
 
 ## Key Architecture Decisions
 
@@ -134,6 +135,49 @@ backend/venv/bin/alembic upgrade head
 - Focus on technical changes and their purpose
 - Use conventional commit format when appropriate
 - Keep messages concise and professional
+
+## Git & GitHub Workflow
+
+**Repository Setup:**
+- GitHub repository: https://github.com/Xplizet/tcg-order-tracker-webapp
+- Default branch: `master`
+- Remote: `origin`
+- GitHub CLI configured for authentication
+
+**Standard Workflow:**
+1. Always work on the `master` branch or create feature branches for larger changes
+2. Commit frequently with descriptive messages
+3. Push to GitHub after completing logical units of work
+4. Use `git status` before committing to verify changes
+5. Frontend and backend code are tracked in the same repository (monorepo structure)
+
+**Common Commands:**
+```bash
+# Check status
+git status
+
+# Add and commit changes
+git add <files>
+git commit -m "message"
+
+# Push to GitHub
+git push
+
+# Pull latest changes
+git pull
+
+# Create and switch to feature branch
+git checkout -b feature/feature-name
+
+# View commit history
+git log --oneline
+```
+
+**Important Notes:**
+- The frontend directory is tracked directly (not as a submodule)
+- Always ensure both frontend and backend changes are committed together when they're related
+- Use GitHub CLI (`gh`) for creating repositories, PRs, and issues
+- Git credentials are managed via GitHub CLI authentication
 
 ## Task Tracking
 
