@@ -114,18 +114,18 @@ export function DataSettings() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-600">Total Preorders</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total_preorders}</div>
+              <div className="text-2xl font-bold text-gray-900">{stats.total_preorders || 0}</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-600">Total Value</div>
               <div className="text-2xl font-bold text-gray-900">
-                ${stats.total_cost.toFixed(2)}
+                ${Number(stats.total_cost || 0).toFixed(2)}
               </div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-600">Total Profit</div>
-              <div className={`text-2xl font-bold ${stats.total_profit >= 0 ? "text-green-600" : "text-red-600"}`}>
-                ${stats.total_profit.toFixed(2)}
+              <div className={`text-2xl font-bold ${Number(stats.total_profit || 0) >= 0 ? "text-green-600" : "text-red-600"}`}>
+                ${Number(stats.total_profit || 0).toFixed(2)}
               </div>
             </div>
           </div>
