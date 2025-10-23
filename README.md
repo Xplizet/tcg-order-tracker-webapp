@@ -2,6 +2,10 @@
 
 A modern cloud-based web application for tracking TCG (Trading Card Game) preorders with real-time sync, analytics, and subscription-based features.
 
+**Repository:** https://github.com/Xplizet/tcg-order-tracker-webapp
+
+**Status:** Phase 2 - Core Features (CRUD Complete)
+
 ## Tech Stack
 
 ### Frontend
