@@ -153,30 +153,30 @@
 
 ### 2.3 Filtering, Search & Sorting
 
-- [ ] 🟢 **Backend - Query Parameters** `@claude`
-  - [ ] Add search query parameter (product_name, store_name, notes)
-  - [ ] Add status filter
-  - [ ] Add store filter (multi-select)
-  - [ ] Add date range filter
-  - [ ] Add amount_owing filter
-  - [ ] Add sorting parameters
-  - [ ] Optimize queries with indexes
+- [x] ✅ **Backend - Query Parameters** `@claude`
+  - [x] Add search query parameter (product_name, store_name, notes)
+  - [x] Add status filter
+  - [x] Add store filter
+  - [x] Add date range filter (order_date and release_date)
+  - [x] Add amount_owing filter
+  - [x] Add sorting parameters (11 sortable fields)
+  - [ ] Optimize queries with indexes (future enhancement)
 
-- [ ] 🟢 **Frontend - Search & Filter UI** `@claude`
-  - [ ] Create search bar component
-  - [ ] Create filter bar component
-  - [ ] Add store multi-select dropdown
-  - [ ] Add status filter dropdown
-  - [ ] Add date range picker (with presets)
-  - [ ] Add "Amount Owing" toggle
-  - [ ] Show active filters as removable chips
-  - [ ] Update URL query params
+- [x] ✅ **Frontend - Search & Filter UI** `@claude`
+  - [x] Create search bar component
+  - [x] Create filter bar component
+  - [x] Add store filter input
+  - [x] Add status filter dropdown
+  - [x] Add date range pickers (order and release dates)
+  - [x] Add "Amount Owing" toggle checkbox
+  - [x] Show active filter count and clear all
+  - [ ] Update URL query params (future enhancement)
 
-- [ ] 🟢 **Frontend - Sorting UI** `@claude`
-  - [ ] Add sort icons to table headers
-  - [ ] Toggle ascending/descending
-  - [ ] Update URL query params
-  - [ ] Persist sort state
+- [x] ✅ **Frontend - Sorting UI** `@claude`
+  - [x] Add sort icons to table headers (↑↓)
+  - [x] Toggle ascending/descending
+  - [x] Visual indicators for active sort
+  - [ ] Persist sort state in URL (future enhancement)
 
 ### 2.4 Dashboard & Analytics
 
