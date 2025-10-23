@@ -3,18 +3,36 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useApi } from "@/lib/use-api"
-import type { Preorder, PreorderList } from "@/lib/api"
+import type { Preorder, PreorderList, PreorderListParams } from "@/lib/api"
 import { EditPreorderForm } from "./edit-preorder-form"
 import { DeleteConfirmation } from "./delete-confirmation"
 
-export function PreorderTable() {
+interface PreorderTableProps {
+  filters: PreorderListParams
+  onSortChange: (sortBy: string) => void
+}
+
+export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   const { apiRequest } = useApi()
   const [editingPreorder, setEditingPreorder] = useState<Preorder | null>(null)
   const [deletingPreorder, setDeletingPreorder] = useState<Preorder | null>(null)
 
+  // Build query string from filters
+  const buildQueryString = (params: PreorderListParams) => {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        searchParams.append(key, value.toString())
+      }
+    })
+    return searchParams.toString()
+  }
+
+  const queryString = buildQueryString(filters)
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["preorders"],
-    queryFn: () => apiRequest<PreorderList>("/api/v1/preorders"),
+    queryKey: ["preorders", queryString],
+    queryFn: () => apiRequest<PreorderList>(`/api/v1/preorders?${queryString}`),
   })
 
   if (isLoading) {
@@ -71,6 +89,25 @@ export function PreorderTable() {
     }
   }
 
+  const SortableHeader = ({ label, sortKey }: { label: string; sortKey: string }) => {
+    const isActive = filters.sort_by === sortKey
+    const isAsc = filters.sort_order === "asc"
+
+    return (
+      <th
+        onClick={() => onSortChange(sortKey)}
+        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 select-none"
+      >
+        <div className="flex items-center gap-1">
+          {label}
+          <span className="text-gray-400">
+            {isActive ? (isAsc ? "↑" : "↓") : "↕"}
+          </span>
+        </div>
+      </th>
+    )
+  }
+
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
@@ -83,33 +120,15 @@ export function PreorderTable() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Product
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Store
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Qty
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cost/Item
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Total Cost
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Paid
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Owing
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Order Date
-              </th>
+              <SortableHeader label="Product" sortKey="product_name" />
+              <SortableHeader label="Store" sortKey="store_name" />
+              <SortableHeader label="Qty" sortKey="quantity" />
+              <SortableHeader label="Cost/Item" sortKey="cost_per_item" />
+              <SortableHeader label="Total Cost" sortKey="total_cost" />
+              <SortableHeader label="Paid" sortKey="amount_paid" />
+              <SortableHeader label="Owing" sortKey="amount_owing" />
+              <SortableHeader label="Status" sortKey="status" />
+              <SortableHeader label="Order Date" sortKey="order_date" />
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>

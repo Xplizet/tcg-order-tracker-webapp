@@ -1,7 +1,7 @@
 import { UserButton } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
 import { AddPreorderForm } from '@/components/preorders/add-preorder-form'
-import { PreorderTable } from '@/components/preorders/preorder-table'
+import { PreordersView } from '@/components/preorders/preorders-view'
 
 export default async function DashboardPage() {
   const user = await currentUser()
@@ -28,7 +28,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <PreorderTable />
+        <PreordersView />
       </div>
     </div>
   )

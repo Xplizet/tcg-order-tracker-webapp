@@ -50,11 +50,28 @@ def list_preorders(
     status: Optional[str] = None,
     store: Optional[str] = None,
     search: Optional[str] = None,
+    order_date_from: Optional[str] = None,
+    order_date_to: Optional[str] = None,
+    release_date_from: Optional[str] = None,
+    release_date_to: Optional[str] = None,
+    amount_owing_only: Optional[bool] = None,
+    sort_by: Optional[str] = "created_at",
+    sort_order: Optional[str] = "desc",
     user_id: str = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    List preorders for the authenticated user with pagination and filtering
+    List preorders for the authenticated user with pagination, filtering, and sorting
+
+    Query Parameters:
+    - status: Filter by status (Pending, Delivered, Sold)
+    - store: Filter by store name
+    - search: Search in product_name, store_name, notes
+    - order_date_from/to: Filter by order date range
+    - release_date_from/to: Filter by release date range
+    - amount_owing_only: Show only preorders with amount owing > 0
+    - sort_by: Field to sort by (created_at, order_date, product_name, total_cost, etc.)
+    - sort_order: Sort order (asc, desc)
     """
     try:
         # Base query - CRITICAL: Filter by user_id for row-level security
@@ -75,14 +92,49 @@ def list_preorders(
                 (Preorder.notes.ilike(search_pattern))
             )
 
-        # Get total count
+        # Date range filters
+        if order_date_from:
+            query = query.filter(Preorder.order_date >= order_date_from)
+        if order_date_to:
+            query = query.filter(Preorder.order_date <= order_date_to)
+        if release_date_from:
+            query = query.filter(Preorder.release_date >= release_date_from)
+        if release_date_to:
+            query = query.filter(Preorder.release_date <= release_date_to)
+
+        # Amount owing filter (using computed column)
+        if amount_owing_only:
+            query = query.filter(Preorder.amount_owing > 0)
+
+        # Get total count before sorting
         total = query.count()
+
+        # Apply sorting
+        valid_sort_fields = {
+            "created_at": Preorder.created_at,
+            "order_date": Preorder.order_date,
+            "release_date": Preorder.release_date,
+            "product_name": Preorder.product_name,
+            "store_name": Preorder.store_name,
+            "quantity": Preorder.quantity,
+            "cost_per_item": Preorder.cost_per_item,
+            "total_cost": Preorder.total_cost,
+            "amount_paid": Preorder.amount_paid,
+            "amount_owing": Preorder.amount_owing,
+            "status": Preorder.status,
+        }
+
+        sort_field = valid_sort_fields.get(sort_by, Preorder.created_at)
+        if sort_order == "asc":
+            query = query.order_by(sort_field.asc())
+        else:
+            query = query.order_by(sort_field.desc())
 
         # Apply pagination
         offset = (page - 1) * page_size
-        preorders = query.order_by(Preorder.created_at.desc()).offset(offset).limit(page_size).all()
+        preorders = query.offset(offset).limit(page_size).all()
 
-        logger.info(f"Retrieved {len(preorders)} preorders for user {user_id}")
+        logger.info(f"Retrieved {len(preorders)} preorders for user {user_id} (total: {total})")
 
         return PreorderList(
             preorders=preorders,

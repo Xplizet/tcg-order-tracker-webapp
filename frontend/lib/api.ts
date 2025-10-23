@@ -71,4 +71,11 @@ export interface PreorderListParams {
   status?: string
   store?: string
   search?: string
+  order_date_from?: string
+  order_date_to?: string
+  release_date_from?: string
+  release_date_to?: string
+  amount_owing_only?: boolean
+  sort_by?: string
+  sort_order?: "asc" | "desc"
 }
