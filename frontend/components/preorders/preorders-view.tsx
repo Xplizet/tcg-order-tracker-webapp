@@ -6,6 +6,7 @@ import { PreorderFilters } from "./preorder-filters"
 import { PreorderTable } from "./preorder-table"
 import { SummaryCards } from "../analytics/summary-cards"
 import { AnalyticsCharts } from "../analytics/analytics-charts"
+import { CsvImportExport } from "./csv-import-export"
 
 export function PreordersView() {
   const [filters, setFilters] = useState<PreorderListParams>({
@@ -32,6 +33,9 @@ export function PreordersView() {
     <div>
       <SummaryCards filters={filters} />
       <AnalyticsCharts filters={filters} />
+      <div className="mb-6 flex justify-end">
+        <CsvImportExport />
+      </div>
       <PreorderFilters filters={filters} onFiltersChange={handleFiltersChange} />
       <PreorderTable filters={filters} onSortChange={handleSortChange} />
     </div>

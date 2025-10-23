@@ -118,3 +118,27 @@ export interface MonthlySpending {
   total_spent: number
   preorder_count: number
 }
+
+/**
+ * Bulk Operations API types
+ */
+export interface BulkUpdateRequest {
+  preorder_ids: string[]
+  update_data: PreorderUpdate
+}
+
+export interface BulkUpdateResponse {
+  updated_count: number
+  failed_ids: string[]
+  message: string
+}
+
+export interface BulkDeleteRequest {
+  preorder_ids: string[]
+}
+
+export interface BulkDeleteResponse {
+  deleted_count: number
+  failed_ids: string[]
+  message: string
+}

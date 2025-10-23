@@ -72,3 +72,28 @@ class PreorderList(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class BulkUpdateRequest(BaseModel):
+    """Schema for bulk update request"""
+    preorder_ids: list[str] = Field(..., min_length=1)
+    update_data: PreorderUpdate
+
+
+class BulkUpdateResponse(BaseModel):
+    """Schema for bulk update response"""
+    updated_count: int
+    failed_ids: list[str] = []
+    message: str
+
+
+class BulkDeleteRequest(BaseModel):
+    """Schema for bulk delete request"""
+    preorder_ids: list[str] = Field(..., min_length=1)
+
+
+class BulkDeleteResponse(BaseModel):
+    """Schema for bulk delete response"""
+    deleted_count: int
+    failed_ids: list[str] = []
+    message: str

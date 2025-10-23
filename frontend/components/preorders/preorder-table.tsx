@@ -6,6 +6,7 @@ import { useApi } from "@/lib/use-api"
 import type { Preorder, PreorderList, PreorderListParams } from "@/lib/api"
 import { EditPreorderForm } from "./edit-preorder-form"
 import { DeleteConfirmation } from "./delete-confirmation"
+import { BulkOperations } from "./bulk-operations"
 
 interface PreorderTableProps {
   filters: PreorderListParams
@@ -16,6 +17,7 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   const { apiRequest } = useApi()
   const [editingPreorder, setEditingPreorder] = useState<Preorder | null>(null)
   const [deletingPreorder, setDeletingPreorder] = useState<Preorder | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
   // Build query string from filters
   const buildQueryString = (params: PreorderListParams) => {
@@ -89,6 +91,28 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
     }
   }
 
+  const handleSelectAll = () => {
+    if (selectedIds.size === data.preorders.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(data.preorders.map(p => p.id)))
+    }
+  }
+
+  const handleSelectOne = (id: string) => {
+    const newSelected = new Set(selectedIds)
+    if (newSelected.has(id)) {
+      newSelected.delete(id)
+    } else {
+      newSelected.add(id)
+    }
+    setSelectedIds(newSelected)
+  }
+
+  const handleBulkOperationComplete = () => {
+    setSelectedIds(new Set())
+  }
+
   const SortableHeader = ({ label, sortKey }: { label: string; sortKey: string }) => {
     const isActive = filters.sort_by === sortKey
     const isAsc = filters.sort_order === "asc"
@@ -111,15 +135,31 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold">
-          My Preorders ({data.total})
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">
+            My Preorders ({data.total})
+          </h2>
+          {selectedIds.size > 0 && (
+            <BulkOperations
+              selectedIds={Array.from(selectedIds)}
+              onComplete={handleBulkOperationComplete}
+            />
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              <th className="px-6 py-3 text-left">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.size === data.preorders.length && data.preorders.length > 0}
+                  onChange={handleSelectAll}
+                  className="rounded border-gray-300"
+                />
+              </th>
               <SortableHeader label="Product" sortKey="product_name" />
               <SortableHeader label="Store" sortKey="store_name" />
               <SortableHeader label="Qty" sortKey="quantity" />
@@ -137,6 +177,14 @@ export function PreorderTable({ filters, onSortChange }: PreorderTableProps) {
           <tbody className="bg-white divide-y divide-gray-200">
             {data.preorders.map((preorder: Preorder) => (
               <tr key={preorder.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(preorder.id)}
+                    onChange={() => handleSelectOne(preorder.id)}
+                    className="rounded border-gray-300"
+                  />
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
                     {preorder.product_url ? (
