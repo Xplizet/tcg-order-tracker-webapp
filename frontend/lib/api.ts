@@ -142,3 +142,27 @@ export interface BulkDeleteResponse {
   failed_ids: string[]
   message: string
 }
+
+/**
+ * Notification Preferences API types
+ */
+export interface NotificationPreferences {
+  user_id: string
+  release_reminders_enabled: boolean
+  release_reminder_days: number
+  payment_reminders_enabled: boolean
+  payment_threshold: number
+  weekly_digest_enabled: boolean
+  monthly_digest_enabled: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface NotificationPreferencesUpdate {
+  release_reminders_enabled?: boolean
+  release_reminder_days?: number
+  payment_reminders_enabled?: boolean
+  payment_threshold?: number
+  weekly_digest_enabled?: boolean
+  monthly_digest_enabled?: boolean
+}
