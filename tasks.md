@@ -14,6 +14,7 @@
 - ✅ Enhanced UX with success/error feedback
 - ✅ Store name autocomplete with 8 default Australian TCG stores
 - ✅ URL query parameter persistence for filters and sorting (shareable/bookmarkable views)
+- ✅ Pagination controls with page navigation and items-per-page selector
 
 ---
 
@@ -152,7 +153,7 @@
   - [x] Add empty state
   - [x] Make responsive (cards on mobile)
   - [x] Add release date column
-  - [ ] Add pagination controls (future enhancement)
+  - [x] Add pagination controls (Previous/Next, page numbers, items-per-page selector)
 
 - [x] ✅ **Frontend - Order Page** `@claude`
   - [x] Create main orders page (integrated into dashboard)
@@ -857,6 +858,37 @@
 - Share links to filtered/sorted data with team members
 - Browser back/forward navigation works with filters
 - Improves user workflow and collaboration
+
+### 7.5.7 Pagination Controls (2025-10-24)
+
+- [x] ✅ **Table Pagination UI** `@claude`
+  - [x] Create PaginationControls component
+  - [x] Add Previous/Next navigation buttons
+  - [x] Add numbered page buttons with ellipsis for many pages
+  - [x] Add items-per-page selector (10, 25, 50, 100 options)
+  - [x] Display pagination info ("Showing X-Y of Z orders")
+  - [x] Integrate with OrderTable component
+  - [x] Add page change handlers in OrdersView
+  - [x] Add page size change handlers
+  - [x] Sync pagination with URL query parameters
+  - [x] Responsive design (condensed view on mobile)
+  - [x] Dark theme compatible styling
+  - [x] Disable Previous/Next when at boundaries
+
+**Features:**
+- Page navigation: Click page numbers or use Previous/Next
+- Items per page: Choose 10, 25, 50, or 100 orders per page
+- Status text: "Showing 1-50 of 237 orders"
+- Smart page number display: Shows ellipsis (...) when many pages
+- Mobile responsive: Simplified "Page X of Y" on small screens
+- URL persistence: Page and page_size saved in URL
+
+**Benefits:**
+- Better performance for users with 100+ orders
+- Reduced scrolling on mobile devices
+- User control over data density
+- Professional data table experience
+- Improved perceived performance
 
 ---
 

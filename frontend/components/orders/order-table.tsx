@@ -7,13 +7,16 @@ import type { Order, OrderList, OrderListParams } from "@/lib/api"
 import { EditOrderForm } from "./edit-order-form"
 import { DeleteConfirmation } from "./delete-confirmation"
 import { BulkOperations } from "./bulk-operations"
+import { PaginationControls } from "../ui/pagination-controls"
 
 interface OrderTableProps {
   filters: OrderListParams
   onSortChange: (sortBy: string) => void
+  onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: number) => void
 }
 
-export function OrderTable({ filters, onSortChange }: OrderTableProps) {
+export function OrderTable({ filters, onSortChange, onPageChange, onPageSizeChange }: OrderTableProps) {
   const { apiRequest } = useApi()
   const [editingOrder, setEditingOrder] = useState<Order | null>(null)
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null)
@@ -411,13 +414,14 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
         </table>
       </div>
 
-      {data.total > data.page_size && (
-        <div className="px-4 sm:px-6 py-4 border-t border-border bg-muted/20">
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Showing {data.orders.length} of {data.total} orders
-          </p>
-        </div>
-      )}
+      {/* Pagination Controls */}
+      <PaginationControls
+        page={data.page}
+        pageSize={data.page_size}
+        total={data.total}
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+      />
 
       {editingOrder && (
         <EditOrderForm

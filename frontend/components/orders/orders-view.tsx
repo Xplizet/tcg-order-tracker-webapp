@@ -111,6 +111,20 @@ export function OrdersView() {
     }))
   }
 
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      page,
+    }))
+  }
+
+  const handlePageSizeChange = (pageSize: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      page_size: pageSize,
+    }))
+  }
+
   return (
     <div>
       <SummaryCards filters={filters} />
@@ -119,7 +133,12 @@ export function OrdersView() {
       <div className="mb-4 flex justify-end">
         <CsvImportExport />
       </div>
-      <OrderTable filters={filters} onSortChange={handleSortChange} />
+      <OrderTable
+        filters={filters}
+        onSortChange={handleSortChange}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   )
 }
