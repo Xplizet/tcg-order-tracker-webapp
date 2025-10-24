@@ -128,7 +128,9 @@ You'll need to create accounts and configure the following services:
 1. **Supabase** - Database & Storage
    - Create project at https://supabase.com
    - Get connection string and API keys
-   - **Important:** Connection pooling is configured for free tier (5 connections max)
+   - **Important:** Use Transaction mode connection string (port 6543) for better connection pooling
+   - Transaction mode supports ~200+ concurrent connections vs Session mode's ~15-20
+   - Connection pool configured with pool_size=10 for optimal performance
 
 2. **Clerk** - Authentication
    - Create application at https://clerk.com
