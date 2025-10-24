@@ -16,6 +16,7 @@
 - ✅ URL query parameter persistence for filters and sorting (shareable/bookmarkable views)
 - ✅ Pagination controls with page navigation and items-per-page selector
 - ✅ Database connection pooling optimization (switched to Transaction mode, port 6543)
+- ✅ Maintenance mode enforcement (blocks non-admin users, redirects to maintenance page)
 
 ---
 
@@ -490,7 +491,7 @@
   - [x] Add "Enable Subscriptions" button
   - [x] Show grandfather date
   - [x] Add tier limit inputs (free, basic, pro)
-  - [ ] Add maintenance mode toggle (future enhancement)
+  - [x] ✅ Add maintenance mode toggle (implemented 2025-10-24)
   - [x] Create confirmation dialogs
 
 - [ ] 🟢 **Frontend - Analytics Tab** `@claude` (Future Enhancement)
