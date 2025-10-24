@@ -13,6 +13,7 @@
 - ✅ Release date column added to order table
 - ✅ Enhanced UX with success/error feedback
 - ✅ Store name autocomplete with 8 default Australian TCG stores
+- ✅ URL query parameter persistence for filters and sorting (shareable/bookmarkable views)
 
 ---
 
@@ -180,13 +181,13 @@
   - [x] Add date range pickers (order and release dates)
   - [x] Add "Amount Owing" toggle checkbox
   - [x] Show active filter count and clear all
-  - [ ] Update URL query params (future enhancement)
+  - [x] Update URL query params for shareable views
 
 - [x] ✅ **Frontend - Sorting UI** `@claude`
   - [x] Add sort icons to table headers (↑↓)
   - [x] Toggle ascending/descending
   - [x] Visual indicators for active sort
-  - [ ] Persist sort state in URL (future enhancement)
+  - [x] Persist sort state in URL
 
 ### 2.4 Dashboard & Analytics
 
@@ -836,6 +837,26 @@
 **Default Australian TCG Stores:**
 - Major Chains: EB Games, JB Hi-Fi, Target Australia, Big W, Kmart Australia
 - Specialist Retailers: Good Games, Gameology, Zing Pop Culture
+
+### 7.5.6 URL Query Parameter Persistence (2025-10-24)
+
+- [x] ✅ **URL State Management** `@claude`
+  - [x] Add Next.js router and search params hooks
+  - [x] Create parseFiltersFromUrl helper function
+  - [x] Create serializeFiltersToUrl helper function
+  - [x] Initialize filters from URL params on page load
+  - [x] Sync URL when filters change (non-blocking)
+  - [x] Support all filter parameters (status, store, search, dates, amount_owing)
+  - [x] Support sort parameters (sort_by, sort_order)
+  - [x] Support pagination parameters (page, page_size)
+  - [x] Enable shareable/bookmarkable filtered views
+  - [x] Preserve scroll position on filter changes
+
+**Benefits:**
+- Users can bookmark specific filtered views
+- Share links to filtered/sorted data with team members
+- Browser back/forward navigation works with filters
+- Improves user workflow and collaboration
 
 ---
 
