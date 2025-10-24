@@ -1,11 +1,14 @@
 """
 Authentication utilities - Clerk JWT verification
 """
-from fastapi import HTTPException, Security
+from fastapi import HTTPException, Security, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
 import jwt
 from jwt import PyJWKClient
-from app.database import get_settings
+from app.database import get_settings, get_db
+from app.models.user import User
+import requests
 import logging
 
 logger = logging.getLogger(__name__)
@@ -63,3 +66,77 @@ def get_current_user_id(credentials: HTTPAuthorizationCredentials = Security(sec
     except Exception as e:
         logger.error(f"Authentication failed: {str(e)}")
         raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
+
+
+def get_current_user(
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+) -> User:
+    """
+    Get current user and auto-create if they don't exist in database yet.
+
+    This ensures users are synced from Clerk on first login without needing webhooks.
+
+    Usage in route:
+        current_user: User = Depends(get_current_user)
+    """
+    # Check if user exists in database
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if user:
+        logger.info(f"Found existing user: {user.email}")
+        return user
+
+    # User doesn't exist - fetch from Clerk and create
+    logger.info(f"User {user_id} not in database - syncing from Clerk...")
+
+    try:
+        # Fetch user data from Clerk API
+        clerk_api_url = f"https://api.clerk.com/v1/users/{user_id}"
+        headers = {
+            "Authorization": f"Bearer {settings.clerk_secret_key}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(clerk_api_url, headers=headers)
+        response.raise_for_status()
+        clerk_user = response.json()
+
+        # Extract user data
+        email_addresses = clerk_user.get("email_addresses", [])
+        primary_email = next(
+            (e["email_address"] for e in email_addresses if e.get("id") == clerk_user.get("primary_email_address_id")),
+            email_addresses[0]["email_address"] if email_addresses else None
+        )
+
+        # Create user in database
+        new_user = User(
+            id=user_id,
+            email=primary_email,
+            first_name=clerk_user.get("first_name"),
+            last_name=clerk_user.get("last_name"),
+            tier="free",
+            is_grandfathered=False,
+            is_admin=False
+        )
+
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        logger.info(f"✅ Auto-created user from Clerk: {new_user.email}")
+        return new_user
+
+    except requests.RequestException as e:
+        logger.error(f"Failed to fetch user from Clerk API: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to sync user from Clerk. Please try again."
+        )
+    except Exception as e:
+        logger.error(f"Failed to create user: {str(e)}")
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to create user in database"
+        )
