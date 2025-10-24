@@ -12,6 +12,7 @@
 - ✅ Amount paid validation (cannot exceed total cost)
 - ✅ Release date column added to order table
 - ✅ Enhanced UX with success/error feedback
+- ✅ Store name autocomplete with 8 default Australian TCG stores
 
 ---
 
@@ -139,7 +140,7 @@
   - [x] Create form fields (all from PRD)
   - [x] Add auto-calculations (total cost, amount owing) - handled by PostgreSQL
   - [x] Add date pickers
-  - [ ] Add store name autocomplete (future enhancement)
+  - [x] Add store name autocomplete with Australian TCG stores
   - [x] Create modal/dialog wrapper
 
 - [x] ✅ **Frontend - Order Table** `@claude`
@@ -816,6 +817,25 @@
   - [x] Update add order form with theme colors
   - [x] Update bulk operations modals with theme colors
   - [x] Remove inline error displays (replaced with toasts)
+
+### 7.5.5 Store Name Autocomplete (2025-10-24)
+
+- [x] ✅ **Autocomplete Implementation** `@claude`
+  - [x] Create backend endpoint GET `/api/v1/orders/stores`
+  - [x] Define 8 default Australian TCG stores in constants
+  - [x] Create reusable AutocompleteInput component
+  - [x] Implement keyboard navigation (arrows, Enter, Escape)
+  - [x] Add click-outside detection to close dropdown
+  - [x] Create useStoreSuggestions hook
+  - [x] Combine default stores with user's previously used stores
+  - [x] Integrate autocomplete in add order form
+  - [x] Integrate autocomplete in edit order form
+  - [x] Add filtering as user types
+  - [x] Cache store suggestions for 5 minutes
+
+**Default Australian TCG Stores:**
+- Major Chains: EB Games, JB Hi-Fi, Target Australia, Big W, Kmart Australia
+- Specialist Retailers: Good Games, Gameology, Zing Pop Culture
 
 ---
 

@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import * as z from "zod"
 import { useApi } from "@/lib/use-api"
+import { useStoreSuggestions } from "@/lib/use-store-suggestions"
+import { AutocompleteInput } from "@/components/ui/autocomplete-input"
 import type { OrderCreate, Order } from "@/lib/api"
 
 const orderSchema = z.object({
@@ -35,12 +37,14 @@ export function AddOrderForm() {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { apiRequest } = useApi()
+  const { suggestions: storeSuggestions } = useStoreSuggestions()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -141,14 +145,20 @@ export function AddOrderForm() {
                 <label className="block text-sm font-medium text-foreground mb-1">
                   Store Name *
                 </label>
-                <input
-                  {...register("store_name")}
-                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-                  placeholder="e.g., TCG Store"
+                <Controller
+                  name="store_name"
+                  control={control}
+                  render={({ field }) => (
+                    <AutocompleteInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      suggestions={storeSuggestions}
+                      placeholder="e.g., EB Games, Good Games"
+                      className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
+                      error={errors.store_name?.message}
+                    />
+                  )}
                 />
-                {errors.store_name && (
-                  <p className="text-destructive text-sm mt-1">{errors.store_name.message}</p>
-                )}
               </div>
 
               <div>

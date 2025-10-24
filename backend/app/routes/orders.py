@@ -278,6 +278,32 @@ def delete_order(
         raise HTTPException(status_code=500, detail=f"Failed to delete order: {str(e)}")
 
 
+@router.get("/stores", response_model=list[str])
+def get_store_names(
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+):
+    """
+    Get unique store names from user's orders
+    Returns a list of unique store names used by the user
+    """
+    try:
+        # Query unique store names for the user
+        store_names = db.query(Order.store_name).filter(
+            Order.user_id == user_id
+        ).distinct().all()
+
+        # Extract store names from tuples and sort
+        stores = sorted([name[0] for name in store_names if name[0]])
+
+        logger.info(f"Retrieved {len(stores)} unique store names for user {user_id}")
+        return stores
+
+    except Exception as e:
+        logger.error(f"Error fetching store names: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch store names: {str(e)}")
+
+
 @router.post("/bulk-update", response_model=BulkUpdateResponse)
 def bulk_update_orders(
     request: BulkUpdateRequest,
