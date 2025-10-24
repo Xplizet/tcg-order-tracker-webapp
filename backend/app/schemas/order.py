@@ -1,7 +1,7 @@
 """
 Pydantic schemas for Order API requests/responses
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional
 from datetime import date, datetime
 from decimal import Decimal
@@ -20,6 +20,14 @@ class OrderCreate(BaseModel):
     release_date: Optional[date] = None
     order_date: Optional[date] = None
     notes: Optional[str] = None
+
+    @model_validator(mode='after')
+    def validate_amount_paid(self):
+        """Validate that amount_paid does not exceed total_cost"""
+        total_cost = self.cost_per_item * self.quantity
+        if self.amount_paid > total_cost:
+            raise ValueError(f"Amount paid (${self.amount_paid}) cannot exceed total cost (${total_cost})")
+        return self
 
 
 class OrderResponse(BaseModel):

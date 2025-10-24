@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { useApi } from "@/lib/use-api"
 import type { Order } from "@/lib/api"
 
@@ -20,40 +21,37 @@ export function DeleteConfirmation({ order, onClose }: DeleteConfirmationProps) 
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] })
+      queryClient.invalidateQueries({ queryKey: ["analytics"] })
+      toast.success("Order deleted successfully")
       onClose()
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete order: ${error.message}`)
     },
   })
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+      <div className="bg-card text-card-foreground rounded-lg shadow-xl max-w-md w-full p-6 border border-border">
         <h2 className="text-xl font-bold mb-4">Delete Order</h2>
 
-        <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{order.product_name}</strong>?
+        <p className="text-muted-foreground mb-6">
+          Are you sure you want to delete <strong className="text-foreground">{order.product_name}</strong>?
           This action cannot be undone.
         </p>
-
-        {deleteOrder.isError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-600 text-sm">
-              Error: {deleteOrder.error.message}
-            </p>
-          </div>
-        )}
 
         <div className="flex gap-3">
           <button
             onClick={() => deleteOrder.mutate()}
             disabled={deleteOrder.isPending}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 transition-colors"
+            className="flex-1 px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 disabled:opacity-50 transition-colors"
           >
             {deleteOrder.isPending ? "Deleting..." : "Delete"}
           </button>
           <button
             onClick={onClose}
             disabled={deleteOrder.isPending}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            className="flex-1 px-4 py-2 border border-border rounded-md hover:bg-muted disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>

@@ -218,6 +218,19 @@ def update_order(
         for field, value in update_data.items():
             setattr(order, field, value)
 
+        # Validate amount_paid doesn't exceed total_cost after update
+        # Total cost is computed by database, so we need to calculate it here
+        quantity = order.quantity
+        cost_per_item = order.cost_per_item
+        amount_paid = order.amount_paid
+        total_cost = quantity * cost_per_item
+
+        if amount_paid > total_cost:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Amount paid (${amount_paid}) cannot exceed total cost (${total_cost})"
+            )
+
         db.commit()
         db.refresh(order)
 

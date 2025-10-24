@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { useApi } from "@/lib/use-api"
 import type { BulkDeleteResponse, BulkUpdateResponse, OrderUpdate } from "@/lib/api"
 
@@ -28,10 +29,13 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] })
-      queryClient.invalidateQueries({ queryKey: ["statistics"] })
+      queryClient.invalidateQueries({ queryKey: ["analytics"] })
       setShowUpdateForm(false)
       onComplete()
-      alert(data.message)
+      toast.success(data.message)
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update orders: ${error.message}`)
     },
   })
 
@@ -46,10 +50,13 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] })
-      queryClient.invalidateQueries({ queryKey: ["statistics"] })
+      queryClient.invalidateQueries({ queryKey: ["analytics"] })
       setShowDeleteConfirm(false)
       onComplete()
-      alert(data.message)
+      toast.success(data.message)
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete orders: ${error.message}`)
     },
   })
 
@@ -70,7 +77,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
     }, {} as OrderUpdate)
 
     if (Object.keys(filteredUpdate).length === 0) {
-      alert("Please select at least one field to update")
+      toast.warning("Please select at least one field to update")
       return
     }
 
@@ -79,41 +86,41 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-muted-foreground">
         {selectedIds.length} selected
       </span>
 
       <button
         onClick={() => setShowUpdateForm(true)}
-        className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="px-3 py-1 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90"
       >
         Bulk Update
       </button>
 
       <button
         onClick={() => setShowDeleteConfirm(true)}
-        className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+        className="px-3 py-1 text-sm bg-destructive text-destructive-foreground rounded hover:bg-destructive/90"
       >
         Bulk Delete
       </button>
 
       {/* Bulk Update Modal */}
       {showUpdateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full border border-border">
             <h3 className="text-lg font-semibold mb-4">
               Bulk Update {selectedIds.length} Order(s)
             </h3>
 
             <form onSubmit={handleBulkUpdate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Update Status
                 </label>
                 <select
                   value={updateForm.status || ""}
                   onChange={(e) => setUpdateForm({ ...updateForm, status: e.target.value || undefined })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground"
                 >
                   <option value="">Don't change</option>
                   <option value="Pending">Pending</option>
@@ -123,7 +130,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Add to Amount Paid
                 </label>
                 <input
@@ -132,7 +139,7 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
                   placeholder="Leave empty to skip"
                   value={updateForm.amount_paid || ""}
                   onChange={(e) => setUpdateForm({ ...updateForm, amount_paid: e.target.value ? Number(e.target.value) : undefined })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground"
                 />
               </div>
 
@@ -140,14 +147,14 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
                 <button
                   type="button"
                   onClick={() => setShowUpdateForm(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={bulkUpdate.isPending}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
                 >
                   {bulkUpdate.isPending ? "Updating..." : "Update"}
                 </button>
@@ -159,24 +166,24 @@ export function BulkOperations({ selectedIds, onComplete }: BulkOperationsProps)
 
       {/* Bulk Delete Confirmation */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card text-card-foreground rounded-lg p-6 max-w-md w-full border border-border">
             <h3 className="text-lg font-semibold mb-4">Confirm Bulk Delete</h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Are you sure you want to delete {selectedIds.length} order(s)? This action cannot be undone.
             </p>
 
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-border rounded-lg hover:bg-muted"
               >
                 Cancel
               </button>
               <button
                 onClick={() => bulkDelete.mutate()}
                 disabled={bulkDelete.isPending}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 disabled:opacity-50"
               >
                 {bulkDelete.isPending ? "Deleting..." : "Delete"}
               </button>

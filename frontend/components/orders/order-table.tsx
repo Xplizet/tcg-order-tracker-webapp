@@ -50,7 +50,7 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
                 <th className="px-6 py-3 text-left w-12">
                   <div className="h-4 w-4 bg-muted rounded animate-pulse"></div>
                 </th>
-                {["Product", "Store", "Qty", "Cost/Item", "Total Cost", "Paid", "Owing", "Status", "Order Date", "Actions"].map((header) => (
+                {["Product", "Store", "Qty", "Cost/Item", "Total Cost", "Paid", "Owing", "Status", "Order Date", "Release Date", "Actions"].map((header) => (
                   <th key={header} className="px-6 py-3 text-left">
                     <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>
                   </th>
@@ -86,6 +86,9 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="h-4 bg-muted rounded w-16 animate-pulse"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="h-4 bg-muted rounded w-24 animate-pulse"></div>
@@ -274,6 +277,10 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
                 <span className="text-muted-foreground">Order Date:</span>
                 <span className="ml-1 text-foreground">{formatDate(order.order_date)}</span>
               </div>
+              <div>
+                <span className="text-muted-foreground">Release Date:</span>
+                <span className="ml-1 text-foreground">{formatDate(order.release_date)}</span>
+              </div>
             </div>
 
             <div className="flex gap-3 pt-2 border-t border-border">
@@ -316,6 +323,7 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
               <SortableHeader label="Owing" sortKey="amount_owing" />
               <SortableHeader label="Status" sortKey="status" />
               <SortableHeader label="Order Date" sortKey="order_date" />
+              <SortableHeader label="Release Date" sortKey="release_date" />
               <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
@@ -377,6 +385,9 @@ export function OrderTable({ filters, onSortChange }: OrderTableProps) {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                   {formatDate(order.order_date)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                  {formatDate(order.release_date)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex gap-2">

@@ -1,10 +1,17 @@
 # TCG Order Tracker - Development Tasks
 
-**Project Status:** ✅ Phase 7 Complete - UI/UX Polish Implemented!
-**Last Updated:** 2025-10-23
+**Project Status:** ✅ Phase 7 Complete - UI/UX Polish + Enhancements!
+**Last Updated:** 2025-10-24
 **Sprint:** Phase 1-7 Complete (✅ Foundation, Core Features, Advanced Features, Settings, Admin Panel, UI/UX Polish)
 
 **Milestone Achieved:** ✅ Production-Ready Application - Full CRUD, Analytics, Bulk Ops, Import/Export, Backup/Restore, User Settings, Admin Panel, Dark Theme, Responsive Design!
+
+**Recent Enhancements (2025-10-24):**
+- ✅ Toast notifications with Sonner for all CRUD operations
+- ✅ Improved delete confirmation modals with dark theme
+- ✅ Amount paid validation (cannot exceed total cost)
+- ✅ Release date column added to order table
+- ✅ Enhanced UX with success/error feedback
 
 ---
 
@@ -137,19 +144,20 @@
 
 - [x] ✅ **Frontend - Order Table** `@claude`
   - [x] Create table component (custom table)
-  - [ ] Add sortable columns (future enhancement)
-  - [ ] Add pagination controls (future enhancement)
-  - [ ] Add row actions (edit, delete) (future enhancement)
+  - [x] Add sortable columns (all 11 fields sortable)
+  - [x] Add row actions (edit, delete buttons)
   - [x] Add loading states
   - [x] Add empty state
-  - [ ] Make responsive (cards on mobile) (future enhancement)
+  - [x] Make responsive (cards on mobile)
+  - [x] Add release date column
+  - [ ] Add pagination controls (future enhancement)
 
 - [x] ✅ **Frontend - Order Page** `@claude`
   - [x] Create main orders page (integrated into dashboard)
   - [x] Add "New Order" button
   - [x] Integrate table component
-  - [ ] Add delete confirmation modal (future enhancement)
-  - [ ] Add success/error toasts (future enhancement)
+  - [x] Add delete confirmation modal with dark theme
+  - [x] Add success/error toasts (sonner integration)
   - [x] Test full CRUD flow (Create + List working)
 
 ### 2.3 Filtering, Search & Sorting
@@ -767,6 +775,50 @@
 
 ---
 
+## Phase 7.5: UX Enhancements (October 2025)
+
+### 7.5.1 Toast Notifications (2025-10-24)
+
+- [x] ✅ **Toast Notification System** `@claude`
+  - [x] Install and configure Sonner library
+  - [x] Add Toaster to root layout (top-right, rich colors)
+  - [x] Add success toasts to create order
+  - [x] Add success toasts to update order
+  - [x] Add success toasts to delete order
+  - [x] Add success toasts to bulk operations
+  - [x] Add error toasts for all failed operations
+  - [x] Add warning toast for bulk update validation
+  - [x] Invalidate analytics cache on mutations
+
+### 7.5.2 Validation Improvements (2025-10-24)
+
+- [x] ✅ **Amount Paid Validation** `@claude`
+  - [x] Frontend: Add Zod refine validator (amount_paid <= total_cost)
+  - [x] Backend: Add Pydantic model validator for OrderCreate
+  - [x] Backend: Add validation in update_order endpoint
+  - [x] Display clear error messages on forms
+  - [x] Return HTTP 400 with detailed message on backend
+
+### 7.5.3 Table Enhancements (2025-10-24)
+
+- [x] ✅ **Release Date Column** `@claude`
+  - [x] Add release date column to desktop table
+  - [x] Add release date to mobile card view
+  - [x] Make release date sortable
+  - [x] Update loading skeleton with new column
+  - [x] Format dates consistently
+
+### 7.5.4 Modal Improvements (2025-10-24)
+
+- [x] ✅ **Dark Theme Modal Updates** `@claude`
+  - [x] Update delete confirmation modal with theme colors
+  - [x] Update edit order form with theme colors
+  - [x] Update add order form with theme colors
+  - [x] Update bulk operations modals with theme colors
+  - [x] Remove inline error displays (replaced with toasts)
+
+---
+
 ## Notes
 
 - All tasks are estimated for a ~16 week timeline (per PRD)
@@ -778,4 +830,4 @@
 
 ---
 
-**Last Updated:** 2025-10-21 by `@claude`
+**Last Updated:** 2025-10-24 by `@claude`

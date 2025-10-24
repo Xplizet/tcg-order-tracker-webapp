@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import * as z from "zod"
 import { useApi } from "@/lib/use-api"
 import type { OrderUpdate, Order } from "@/lib/api"
@@ -19,6 +20,12 @@ const orderSchema = z.object({
   release_date: z.string().optional().or(z.literal("")),
   order_date: z.string().optional().or(z.literal("")),
   notes: z.string().optional().or(z.literal("")),
+}).refine((data) => {
+  const totalCost = data.cost_per_item * data.quantity
+  return data.amount_paid <= totalCost
+}, {
+  message: "Amount paid cannot exceed total cost",
+  path: ["amount_paid"],
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
@@ -61,7 +68,12 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] })
+      queryClient.invalidateQueries({ queryKey: ["analytics"] })
+      toast.success("Order updated successfully")
       onClose()
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update order: ${error.message}`)
     },
   })
 
@@ -80,13 +92,13 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-card text-card-foreground rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Edit Order</h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-muted-foreground hover:text-foreground"
             >
               ✕
             </button>
@@ -94,68 +106,68 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Product Name *
               </label>
               <input
                 {...register("product_name")}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 placeholder="e.g., Pokemon Scarlet & Violet Booster Box"
               />
               {errors.product_name && (
-                <p className="text-red-600 text-sm mt-1">{errors.product_name.message}</p>
+                <p className="text-destructive text-sm mt-1">{errors.product_name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Product URL
               </label>
               <input
                 {...register("product_url")}
                 type="url"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 placeholder="https://..."
               />
               {errors.product_url && (
-                <p className="text-red-600 text-sm mt-1">{errors.product_url.message}</p>
+                <p className="text-destructive text-sm mt-1">{errors.product_url.message}</p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Store Name *
                 </label>
                 <input
                   {...register("store_name")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                   placeholder="e.g., TCG Store"
                 />
                 {errors.store_name && (
-                  <p className="text-red-600 text-sm mt-1">{errors.store_name.message}</p>
+                  <p className="text-destructive text-sm mt-1">{errors.store_name.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Quantity *
                 </label>
                 <input
                   {...register("quantity")}
                   type="number"
                   min="1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
                 {errors.quantity && (
-                  <p className="text-red-600 text-sm mt-1">{errors.quantity.message}</p>
+                  <p className="text-destructive text-sm mt-1">{errors.quantity.message}</p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Cost Per Item *
                 </label>
                 <input
@@ -163,16 +175,16 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
                   type="number"
                   step="0.01"
                   min="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                   placeholder="0.00"
                 />
                 {errors.cost_per_item && (
-                  <p className="text-red-600 text-sm mt-1">{errors.cost_per_item.message}</p>
+                  <p className="text-destructive text-sm mt-1">{errors.cost_per_item.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Amount Paid
                 </label>
                 <input
@@ -180,23 +192,23 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
                   type="number"
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                   placeholder="0.00"
                 />
                 {errors.amount_paid && (
-                  <p className="text-red-600 text-sm mt-1">{errors.amount_paid.message}</p>
+                  <p className="text-destructive text-sm mt-1">{errors.amount_paid.message}</p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Status
                 </label>
                 <select
                   {...register("status")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 >
                   <option value="Pending">Pending</option>
                   <option value="Delivered">Delivered</option>
@@ -205,7 +217,7 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Sold Price
                 </label>
                 <input
@@ -213,7 +225,7 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
                   type="number"
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                   placeholder="0.00"
                 />
               </div>
@@ -221,24 +233,24 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Order Date
                 </label>
                 <input
                   {...register("order_date")}
                   type="date"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Release Date
                 </label>
                 <input
                   {...register("release_date")}
                   type="date"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
               </div>
             </div>
@@ -250,7 +262,7 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
               <textarea
                 {...register("notes")}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 placeholder="Any additional notes..."
               />
             </div>
@@ -259,26 +271,18 @@ export function EditOrderForm({ order, onClose }: EditOrderFormProps) {
               <button
                 type="submit"
                 disabled={updateOrder.isPending}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+                className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition-colors"
               >
                 {updateOrder.isPending ? "Updating..." : "Update Order"}
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-border rounded-md hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
             </div>
-
-            {updateOrder.isError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-600 text-sm">
-                  Error: {updateOrder.error.message}
-                </p>
-              </div>
-            )}
           </form>
         </div>
       </div>
