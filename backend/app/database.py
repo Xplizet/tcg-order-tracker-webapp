@@ -53,7 +53,7 @@ engine = create_engine(
     settings.database_url,
     pool_pre_ping=True,  # Verify connections before using
     echo=settings.debug,  # Log SQL queries in debug mode
-    pool_size=5,  # Maximum number of permanent connections (Supabase free tier limit)
+    pool_size=10,  # Transaction mode supports higher connection limits
     max_overflow=0,  # No additional connections beyond pool_size
     pool_recycle=3600,  # Recycle connections after 1 hour
 )

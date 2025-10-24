@@ -15,6 +15,7 @@
 - ✅ Store name autocomplete with 8 default Australian TCG stores
 - ✅ URL query parameter persistence for filters and sorting (shareable/bookmarkable views)
 - ✅ Pagination controls with page navigation and items-per-page selector
+- ✅ Database connection pooling optimization (switched to Transaction mode, port 6543)
 
 ---
 
@@ -585,7 +586,8 @@
 - [x] ✅ **Backend Performance** `@claude`
   - [ ] Review and optimize slow queries (future enhancement)
   - [x] Add database query logging (enabled in debug mode)
-  - [x] Implement connection pooling (pool_size=5, max_overflow=0, pool_recycle=3600)
+  - [x] Implement connection pooling (pool_size=2, Transaction mode port 6543)
+  - [x] Optimize connection pooling for Supabase (switched from Session to Transaction mode)
   - [ ] Add response compression (future enhancement)
   - [ ] Profile endpoint performance (future enhancement)
 
