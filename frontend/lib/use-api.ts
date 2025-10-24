@@ -32,16 +32,6 @@ export function useApi() {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: "Request failed" }))
-
-      // Handle maintenance mode (503)
-      if (response.status === 503 && error.maintenance_mode) {
-        // Redirect to maintenance page
-        if (typeof window !== "undefined") {
-          window.location.href = "/maintenance"
-        }
-        throw new Error(error.message || "Application is under maintenance")
-      }
-
       throw new Error(error.detail || `HTTP ${response.status}: ${response.statusText}`)
     }
 

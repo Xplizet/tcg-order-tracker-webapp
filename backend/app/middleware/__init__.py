@@ -1,6 +1,6 @@
 """
 Middleware package
 """
-from .maintenance import MaintenanceModeMiddleware
+from .maintenance import maintenance_mode_middleware
 
-__all__ = ["MaintenanceModeMiddleware"]
+__all__ = ["maintenance_mode_middleware"]

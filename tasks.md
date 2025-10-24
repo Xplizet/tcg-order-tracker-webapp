@@ -16,7 +16,7 @@
 - ✅ URL query parameter persistence for filters and sorting (shareable/bookmarkable views)
 - ✅ Pagination controls with page navigation and items-per-page selector
 - ✅ Database connection pooling optimization (switched to Transaction mode, port 6543)
-- ✅ Maintenance mode enforcement (blocks non-admin users, redirects to maintenance page)
+- 🔵 Maintenance mode enforcement (BLOCKED - middleware not executing, needs investigation)
 
 ---
 
@@ -439,9 +439,11 @@
   - [x] Create feature flags management UI in admin panel
   - [x] Add "Enable Subscriptions" button with grandfather date setting
   - [x] Add tier limit configuration (free, basic, pro)
+  - [x] Add maintenance mode toggle (UI only - enforcement blocked)
   - [ ] Show upgrade prompts for locked features (future - when subscriptions enabled)
   - [ ] Display limit warnings (e.g., "8/10 orders") (future - when subscriptions enabled)
   - [ ] Add tooltips for Pro features (future - when subscriptions enabled)
+  - [ ] 🔵 Maintenance mode enforcement (BLOCKED - middleware not executing correctly)
 
 ---
 
@@ -491,7 +493,7 @@
   - [x] Add "Enable Subscriptions" button
   - [x] Show grandfather date
   - [x] Add tier limit inputs (free, basic, pro)
-  - [x] ✅ Add maintenance mode toggle (implemented 2025-10-24)
+  - [x] Add maintenance mode toggle
   - [x] Create confirmation dialogs
 
 - [ ] 🟢 **Frontend - Analytics Tab** `@claude` (Future Enhancement)
@@ -759,7 +761,12 @@
 ## Blockers & Dependencies
 
 ### Current Blockers
-*None yet - add as they arise*
+- 🔵 **Maintenance Mode Enforcement (2025-10-24)** `@claude`
+  - Issue: FastAPI middleware not executing during request processing
+  - Symptoms: Middleware registered successfully but dispatch() method never called
+  - Tried: BaseHTTPMiddleware class, plain async function with app.middleware("http")
+  - Impact: Maintenance mode toggle works in UI/database but doesn't block users
+  - Next Steps: Need to investigate FastAPI middleware execution model or use alternative approach (e.g., route-level dependencies)
 
 ### External Dependencies
 - [ ] Supabase project creation → `@user`

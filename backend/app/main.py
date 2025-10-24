@@ -13,7 +13,6 @@ load_dotenv()
 
 # Import routers
 from app.routes import orders, webhooks, analytics, notifications, admin
-from app.middleware import MaintenanceModeMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,10 +42,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Maintenance Mode Middleware
-# Note: Added AFTER CORS to ensure CORS headers are applied to maintenance responses
-app.add_middleware(MaintenanceModeMiddleware)
 
 
 @app.get("/")
